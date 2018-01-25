@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using SpaceScavengerUniversal;
 
 namespace Space_Scavenger
 {
@@ -101,8 +102,9 @@ namespace Space_Scavenger
         {
             graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferHeight = Globals.ScreenHeight,
-                PreferredBackBufferWidth = Globals.ScreenWidth
+                //PreferredBackBufferHeight = Globals.ScreenHeight,
+                //PreferredBackBufferWidth = Globals.ScreenWidth,
+                IsFullScreen = true
             };
             Content.RootDirectory = "Content";
         }
@@ -163,7 +165,7 @@ namespace Space_Scavenger
 
             gameObject = gameObject;
             // TODO: Add your initialization logic here
-
+            //graphics.IsFullScreen = true;
             base.Initialize();
         }
 
@@ -267,8 +269,9 @@ namespace Space_Scavenger
                         if (Player.Position.Y <= new Vector2(0, 400).Y + 400 &&
                             Player.Position.Y >= new Vector2(0, -400).Y)
                         {
+                            char button = App.IsXbox() ? 'Y' : 'E';
+                            _inRangeToBuyString = $"Press {button} to buy";
 
-                            _inRangeToBuyString = "Press E to buy";
                             if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 || 
                                 GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0)
                             {
