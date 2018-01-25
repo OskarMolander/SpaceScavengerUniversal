@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using SpaceScavengerUniversal;
 
 namespace Space_Scavenger
 {
@@ -95,7 +96,7 @@ namespace Space_Scavenger
         private Texture2D treasureShipTexture;
         private int wantedEnemies = 5;
         private readonly int wantedPowerUps = 5;
-
+        private Vector2 _previousRightThumbstickState = new Vector2(float.MinValue, float.MinValue);
 
         public SpaceScavenger()
         {
@@ -267,8 +268,8 @@ namespace Space_Scavenger
                         if (Player.Position.Y <= new Vector2(0, 400).Y + 400 &&
                             Player.Position.Y >= new Vector2(0, -400).Y)
                         {
+                            _inRangeToBuyString = App.IsXbox() ? "Press Y to buy" : "Press E to buy";
 
-                            _inRangeToBuyString = "Press E to buy";
                             if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 || 
                                 GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0)
                             {
@@ -288,24 +289,62 @@ namespace Space_Scavenger
                         _inRangeToBuyString = "";
 
                     #region ControlInputs
-                    if (state.IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickUp))
+                    if (state.IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickUp))
                         Player.Accelerate();
-                    if(state.IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickDown))
+                    if(state.IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickDown))
                         Player.Decelerate();
                     if (state.IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickLeft))
                         Player.StrafeLeft();
                     if (state.IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickRight))
                         Player.StrafeRight();
 
-                    if (state.IsKeyDown(Keys.Left))
-                        Player.Rotation -= 0.06f;
-                    if (state.IsKeyDown(Keys.Right))
-                        Player.Rotation -= 0.06f;
+                    //if (state.IsKeyDown(Keys.Left))
+                    //    Player.Rotation -= 0.06f;
+                    //if (state.IsKeyDown(Keys.Right))
+                    //    Player.Rotation -= 0.06f;
+                    var joyStickY = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y;
+                    var joyStickX = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X;
+                    
+                    
 
-                    var js = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
-                   
+                    
+                        //if (Math.Abs(_previousRightThumbstickState.X) > 0 || Math.Abs(_previousRightThumbstickState.Y) > 0)
+                        //{
+
+                    //}
+                    //else
+                    //{
+                    //    Player.Rotation = (float)Math.Atan2(-_previousRightThumbstickState.Y, _previousRightThumbstickState.X);
+                    //}
+
+                    //if (Math.Abs(joyStickX) < 0.5f && Math.Abs(joyStickY) < 0.5f)
+                    //{
+                    //    Player.Rotation = (float) Math.Atan2(-_previousRightThumbstickState.Y, _previousRightThumbstickState.X);
+                    //}
+                    //else
+                    //{
+                    //   
+                    //}
+                    Player.Rotation = (float)Math.Atan2(-joyStickY, joyStickX);
+                    if (Math.Abs(joyStickX) < 0.1 && Math.Abs(joyStickY) < 0.1 && Math.Abs(_previousRightThumbstickState.X - float.MinValue) > 0 && Math.Abs(_previousRightThumbstickState.Y - float.MinValue) > 0)
+                    {
+                        //Player.Rotation = (float) 3 * MathHelper.PiOver2;
+                        Player.Rotation =
+                            (float) Math.Atan2(-_previousRightThumbstickState.Y, _previousRightThumbstickState.X);
+                    }
+
+
+                    if (Math.Abs(joyStickX) > 0.1)
+                        _previousRightThumbstickState.X = joyStickX;
+                    if (Math.Abs(joyStickY) > 0.1)
+                        _previousRightThumbstickState.Y = joyStickY;
+
+
+
                     //if (state.IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightThumbstickRight))
                     //    Player.Rotation += 0.06f;
+
+
 
                     if (state.IsKeyDown(Keys.P) && _previousKbState.IsKeyUp(Keys.P) || 
                         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && _previousGpState.IsButtonUp(Buttons.Start))
@@ -558,7 +597,7 @@ namespace Space_Scavenger
                             }
                             enemyHit = true;
                             enemyPositionExplosion = treasureHit.Position;
-                            Debug.WriteLine(enemyPositionExplosion);
+                            ////Debjg.WriteLine(enemyPositionExplosion);
                             shot.IsDead = true;
                         }
                         if (hitBoss != null)
@@ -576,7 +615,7 @@ namespace Space_Scavenger
                             }
                             enemyHit = true;
                             enemyPositionExplosion = hitBoss.Position;
-                            Debug.WriteLine(enemyPositionExplosion);
+                            ////Debug.WriteLine(enemyPositionExplosion);
                             shot.IsDead = true;
                         }
                         if (hitasteroid != null)
@@ -590,7 +629,7 @@ namespace Space_Scavenger
                             asteroid.miniStroid(hitasteroid.Position);
                             asteroid._nrofAsteroids.Remove(hitasteroid);
                             Exp.CurrentScore += hitasteroid.ScoreReward;
-                            Debug.WriteLine(Exp.CurrentScore);
+                            //Debjg.WriteLine(Exp.CurrentScore);
                             shot.IsDead = true;
                         }
                         shot.Timer--;

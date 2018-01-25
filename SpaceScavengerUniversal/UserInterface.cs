@@ -92,7 +92,7 @@ namespace Space_Scavenger
             {
                 _spriteBatch.Draw(_healthBarLeft, new Vector2(_position.X - 800, _position.Y - 530), Color.White);
 
-                for (int i = 0; i < _myGame.Player.MaxHealth - 2; i++)
+                for (int i = 0; i < _myGame.Player.Health - 2; i++)
                 {
                     _spriteBatch.Draw(_healthbarMiddle, new Vector2(_position.X - 795 + (i*_healthbarMiddle.Width), _position.Y - 530), Color.White);
                 }

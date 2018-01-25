@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Space_Scavenger
 {
@@ -16,6 +17,7 @@ namespace Space_Scavenger
         public float Radius { get; set; }
         public Vector2 Speed { get; set; }
         public float Rotation { get; set; }
+        public Vector2 PlayerRotation { get; set; }
         public bool Accelerating { get; set; }
         public bool Decelerating { get; set; }
         public int Health { get; set; }
@@ -45,11 +47,10 @@ namespace Space_Scavenger
             healthTexture = Game.Content.Load<Texture2D>("powerupRed");
             base.LoadContent();
         }
-
+        
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(playerTexture, Position, null, Color.White, Rotation + MathHelper.PiOver2, new Vector2(playerTexture.Width / 2, playerTexture.Height / 2), 0.5f, SpriteEffects.None, 0f);
-
         }
         public void Accelerate()
         {
@@ -73,6 +74,7 @@ namespace Space_Scavenger
             Speed -= new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * 0.30f;
         }
 
+        
 
         //public void Accelerate()
         //{
