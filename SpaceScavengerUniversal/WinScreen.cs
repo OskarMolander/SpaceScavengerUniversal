@@ -36,14 +36,16 @@ namespace Space_Scavenger
 
         public override void Update(GameTime gameTime)
         {
-
             if (_myGame.gamestate == GameState.Winscreen)
             {
-
                 if (Keyboard.GetState().IsKeyDown(Keys.Space) && _prevKeyboardState.IsKeyUp(Keys.Space))
                 {
                     _myGame.Player.Position = Vector2.Zero;
                     _myGame.Player.Speed = Vector2.Zero;
+                    _myGame.Player.MaxHealth = 5;
+                    _myGame.Player.MaxShield = 5;
+                    _myGame.Player.Health = 5;
+                    _myGame.Player.Shield = 5;
                     _myGame.Money.Moneyroids.Clear();
                     _myGame.Exp.CurrentScore = 0;
                     _myGame.Exp.CurrentExp = 0;

@@ -79,6 +79,8 @@ namespace Space_Scavenger
             _spriteBatch.DrawString(_scoreFont, "$: " + _myGame.Exp.CurrentExp, new Vector2(_position.X + 620, _position.Y - 495), Color.Green);
             // Boost
             _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(_position.X - 940, _position.Y - 450), Color.White );
+            _spriteBatch.DrawString(_scoreFont, $"Enemies killed: {_myGame.defeatedEnemies}", new Vector2(_position.X - 800, _position.Y - 450),
+                Color.White);
            // Shop
            
             #endregion

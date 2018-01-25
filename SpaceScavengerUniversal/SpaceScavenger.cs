@@ -126,6 +126,18 @@ namespace Space_Scavenger
         /// </summary>
         protected override void Initialize()
         {
+
+            ResetGame();
+            gamestate = GameState.Menu;
+
+            gameObject = gameObject;
+            // TODO: Add your initialization logic here
+
+            base.Initialize();
+        }
+
+        public void ResetGame()
+        {
             Exp = new Exp();
             BombEnemy = new BombEnemy();
             Player = new Player(this);
@@ -153,21 +165,13 @@ namespace Space_Scavenger
             _winScreen = new WinScreen(this);
             Components.Add(_winScreen);
             Components.Add(_gameOverScreen);
-            gamestate = GameState.Menu;
             _shop = new Shop(this);
             Components.Add(_shop);
             _shopItem = new ShopItem(this);
             Components.Add(_shopItem);
 
             fasterLaser = false;
-
-
-            gameObject = gameObject;
-            // TODO: Add your initialization logic here
-
-            base.Initialize();
         }
-
         /// <summary>
         ///     LoadContent will be called once per game and is the place to load
         ///     all of your content.
@@ -245,11 +249,10 @@ namespace Space_Scavenger
 
                     #region Menu
 
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                        Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Exit();
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A))
                         gamestate = GameState.Playing;
 
                     #endregion
@@ -259,8 +262,7 @@ namespace Space_Scavenger
 
                     #region Playing
 
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                        Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Exit();
                     if (BossKill)
                         gamestate = GameState.Winscreen;
@@ -302,9 +304,9 @@ namespace Space_Scavenger
                     //    Player.Rotation -= 0.06f;
                     //if (state.IsKeyDown(Keys.Right))
                     //    Player.Rotation -= 0.06f;
-                    var joyStickY = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y;
-                    var joyStickX = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X;
-                    
+                    //var joyStickY = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y;
+                    //var joyStickX = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X;
+                    var rightThumbstickState = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
                     
 
                     
@@ -325,20 +327,33 @@ namespace Space_Scavenger
                     //{
                     //   
                     //}
-                    Player.Rotation = (float)Math.Atan2(-joyStickY, joyStickX);
-                    if (Math.Abs(joyStickX) < 0.1 && Math.Abs(joyStickY) < 0.1 && Math.Abs(_previousRightThumbstickState.X - float.MinValue) > 0 && Math.Abs(_previousRightThumbstickState.Y - float.MinValue) > 0)
+                    //Player.Rotation = (float)Math.Atan2(-joyStickY, joyStickX);
+                    //if (Math.Abs(joyStickX) < 0.1 && Math.Abs(joyStickY) < 0.1 && Math.Abs(_previousRightThumbstickState.X - float.MinValue) > 0 && Math.Abs(_previousRightThumbstickState.Y - float.MinValue) > 0)
+                    //{
+                    //    //Player.Rotation = (float) 3 * MathHelper.PiOver2;
+                    //    Player.Rotation =
+                    //        (float) Math.Atan2(-_previousRightThumbstickState.Y, _previousRightThumbstickState.X);
+                    //}
+
+
+                    //if (Math.Abs(joyStickX) > 0.1)
+                    //    _previousRightThumbstickState.X = joyStickX;
+                    //if (Math.Abs(joyStickY) > 0.1)
+                    //    _previousRightThumbstickState.Y = joyStickY;
+
+                    if (rightThumbstickState.X == 0 && rightThumbstickState.Y == 0)
                     {
-                        //Player.Rotation = (float) 3 * MathHelper.PiOver2;
-                        Player.Rotation =
-                            (float) Math.Atan2(-_previousRightThumbstickState.Y, _previousRightThumbstickState.X);
+                        Player.Rotation = GetRotationFromVector(_previousRightThumbstickState);
+                    }
+                    else
+                    {
+                        Player.Rotation = GetRotationFromVector(rightThumbstickState);
+                        _previousRightThumbstickState = rightThumbstickState;
                     }
 
+                    
 
-                    if (Math.Abs(joyStickX) > 0.1)
-                        _previousRightThumbstickState.X = joyStickX;
-                    if (Math.Abs(joyStickY) > 0.1)
-                        _previousRightThumbstickState.Y = joyStickY;
-
+                    float GetRotationFromVector(Vector2 vector) => (float) Math.Atan2(-vector.Y, vector.X);
 
 
                     //if (state.IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightThumbstickRight))
@@ -593,7 +608,6 @@ namespace Space_Scavenger
                                 //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
                                 treasureHit.IsDead = true;
                                 Exp.CurrentScore += treasureHit.ScoreReward;
-                                Exp.CurrentEnemiesKilled++;
                             }
                             enemyHit = true;
                             enemyPositionExplosion = treasureHit.Position;
@@ -822,13 +836,12 @@ namespace Space_Scavenger
                 case GameState.Shopping:
 
                     #region Shopping
-
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                        Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Exit();
 
                     if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 
-                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0)
+                        || (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y)
+                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.B)) && _shoptimer <= 0)
                     {
                         gamestate = GameState.Playing;
                         _shoptimer = 10;
@@ -1118,7 +1131,6 @@ namespace Space_Scavenger
                             new Vector2(enemyDamage.Width / 2f, enemyDamage.Height / 2f), 0.5f, SpriteEffects.None, 0f);
                         enemyHit = false;
                     }
-
 
                     spriteBatch.End();
 
