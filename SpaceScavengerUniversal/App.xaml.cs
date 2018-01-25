@@ -66,13 +66,13 @@ namespace SpaceScavengerUniversal
     /// will be used such as when the application is launched to open a specific file.
     /// </summary>
     /// <param name="e">Details about the launch request and process.</param>
-    protected override async void OnLaunched(LaunchActivatedEventArgs e)
+    protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
         // By default we want to fill the entire core window.
         ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
 
         // Make splash screen appear for a specified amount of time to be able to show info
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        //await Task.Delay(TimeSpan.FromSeconds(10));
             
 
 #if DEBUG

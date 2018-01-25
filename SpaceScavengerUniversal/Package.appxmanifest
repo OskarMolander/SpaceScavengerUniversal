@@ -16,7 +16,7 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SpaceScavengerUniversal.App">
       <uap:VisualElements DisplayName="SpaceScavengerUniversal" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="SpaceScavengerUniversal" BackgroundColor="#464646">
-        <uap:SplashScreen Image="Assets\stalin.jpg" BackgroundColor="#FF0000" />
+        <uap:SplashScreen Image="Assets\stalin.png" BackgroundColor="#000000" />
       </uap:VisualElements>
     </Application>
   </Applications>

@@ -145,7 +145,13 @@
     <None Include="SpaceScavengerUniversal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\MenuText.png" />
     <Content Include="Assets\stalin.jpg" />
+    <Content Include="Assets\stalin.scale-100.png" />
+    <Content Include="Assets\stalin.scale-125.png" />
+    <Content Include="Assets\stalin.scale-150.png" />
+    <Content Include="Assets\stalin.scale-200.png" />
+    <Content Include="Assets\stalin.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
