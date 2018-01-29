@@ -30,7 +30,7 @@ namespace Space_Scavenger
 
         public Player(Game game) : base(game)
         {
-            Position = new Vector2(Globals.ScreenWidth/ 2,Globals.ScreenHeight/2);
+            Position = new Vector2((float)Globals.ScreenWidth/ 2,(float)Globals.ScreenHeight/2);
             Health = 5;
             Shield = 5;
             Radius = 12;

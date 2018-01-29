@@ -304,12 +304,12 @@ namespace Space_Scavenger
                         Player.StrafeRight();
 
 
-                    var mouse = Mouse.GetState();
-                    var mouseLoc = new Vector2(mouse.X, mouse.Y);
-                    var direction = mouseLoc - Player.Position;
-                    float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
+                    //var mouse = Mouse.GetState();
+                    //var mouseLoc = new Vector2(mouse.X, mouse.Y);
+                    //var direction = mouseLoc - Player.Position;
+                    //float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
 
-                    Player.Rotation = GetRotationFromVector(direction);
+                    //Player.Rotation = GetRotationFromVector(direction);
 
 
 
