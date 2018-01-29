@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation.Metadata;
+using Windows.Media.Devices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -291,24 +292,24 @@ namespace Space_Scavenger
                         _inRangeToBuyString = "";
 
                     #region ControlInputs
-                    if (state.IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickUp))
+
+                    //Keyboard + mouse
+                    if (state.IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickUp))
                         Player.Accelerate();
-                    if(state.IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickDown))
+                    if(state.IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickDown))
                         Player.Decelerate();
                     if (state.IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickLeft))
                         Player.StrafeLeft();
                     if (state.IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickRight))
                         Player.StrafeRight();
 
-                    if (state.IsKeyDown(Keys.Left))
-                        Player.Rotation -= 0.06f;
-                    if (state.IsKeyDown(Keys.Right))
-                        Player.Rotation -= 0.06f;
 
-                    var js = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
-                   
-                    //if (state.IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightThumbstickRight))
-                    //    Player.Rotation += 0.06f;
+                    var curMouse = Mouse.GetState();
+                    var mouseLoc = new Vector2(curMouse.X,curMouse.Y);
+
+                    var direction = Player.Position - mouseLoc;
+                    Player.Rotation = (float)Math.Atan2(-direction.Y,direction.X);
+
 
                     if (state.IsKeyDown(Keys.P) && _previousKbState.IsKeyUp(Keys.P) || 
                         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && _previousGpState.IsButtonUp(Buttons.Start))
