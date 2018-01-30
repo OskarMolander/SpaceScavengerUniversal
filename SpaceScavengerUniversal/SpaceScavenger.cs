@@ -81,7 +81,7 @@ namespace Space_Scavenger
         public readonly List<TreasureShip> treasureShips = new List<TreasureShip>();
 
         public KeyboardState previousKbState;
-        public GamePadState  previousGpState;
+        public GamePadState  previousGamePadState;
         public Shop          shop;
         public BombEnemy     bombEnemy;
         public Boost         boost;
@@ -282,12 +282,15 @@ namespace Space_Scavenger
 
                     break;
                 case GameState.Playing:
+                    HandleKeyboardInput();
+                    HandleControllerInput();
+                    HandleCollisionDetection();
+                    MovePlayer();
+                    RemoveDeadGameObjects();
 
                     #region Playing
 
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                        Keyboard.GetState().IsKeyDown(Keys.Escape))
-                        Exit();
+                    
                     if (bossKill)
                         gameState = GameState.Winscreen;
                     if (Player.Position.X <= new Vector2(400, 0).X && Player.Position.X >= new Vector2(-400, 0).X)
@@ -314,68 +317,6 @@ namespace Space_Scavenger
                         }
                     else
                         _inRangeToBuyString = "";
-
-                    #region ControlInputs
-
-                    //Keyboard + mouse
-                    if (state.IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickUp))
-                        Player.Accelerate();
-                    if(state.IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickDown))
-                        Player.Decelerate();
-                    if (state.IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickLeft))
-                        Player.StrafeLeft();
-                    if (state.IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.LeftThumbstickRight))
-                        Player.StrafeRight();
-
-
-                    var mouse = Mouse.GetState();
-                    var mouseLoc = new Vector2(mouse.X, mouse.Y);
-                    var center = new Vector2(Globals.ScreenWidth / 2f, Globals.ScreenHeight / 2f);
-                    var direction = mouseLoc - center;
-                    float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
-
-                    Player.Rotation = GetRotationFromVector(direction);
-
-
-
-
-                    if (state.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P) || 
-                        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && previousGpState.IsButtonUp(Buttons.Start))
-                        gameState = GameState.Paused;
-
-                    previousKbState = Keyboard.GetState();
-                    previousGpState = GamePad.GetState(PlayerIndex.One);
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightTrigger))
-                        if (_reloadTime <= 0)
-                            if (MultiShot)
-                            {
-                                //laserEffect.Play(0.2f, 0.0f, 0.0f);
-                                var s = Player.multiShot();
-                                if (s != null)
-                                    shots.Add(s);
-                                var s2 = Player.multiShot();
-                                if (s2 != null)
-                                    shots.Add(s2);
-                                _reloadTime = 10;
-                            }
-                            else
-                            {
-                                //laserEffect.Play(0.2f, 0.0f, 0.0f);
-                                var s = Player.Shoot();
-                                if (s != null)
-                                    shots.Add(s);
-                                _reloadTime = 10;
-                            }
-                    if (state.IsKeyDown(Keys.C) && _playerShieldCooldown <= 0 || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X) && _playerShieldCooldown <= 0)
-                    {
-                        _playerShieldTimer = 60;
-                        _playerShieldCooldown = 300;
-                    }
-                    //if (state.IsKeyDown(Keys.B))
-                    //    Player.Speed = new Vector2(0, 0);
-
-                    #endregion
-
                     #region Playermovement
 
                     Player.Position += Player.Speed;
@@ -807,10 +748,10 @@ namespace Space_Scavenger
                     #region Paused
 
                     if (state.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P) 
-                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && previousGpState.IsButtonUp(Buttons.Start))
+                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && previousGamePadState.IsButtonUp(Buttons.Start))
                         gameState = GameState.Playing;
                     previousKbState = Keyboard.GetState();
-                    previousGpState = GamePad.GetState(PlayerIndex.One);
+                    previousGamePadState = GamePad.GetState(PlayerIndex.One);
 
                     #endregion Paused
 
@@ -866,6 +807,147 @@ namespace Space_Scavenger
             }
 
             base.Update(gameTime);
+        }
+
+        private void RemoveDeadGameObjects()
+        {
+            return;
+        }
+
+        private void MovePlayer()
+        {
+            return;
+        }
+
+        private void HandleCollisionDetection()
+        {
+            return;
+        }
+
+        private void HandleControllerInput()
+        {
+            var gamePadState = GamePad.GetState(PlayerIndex.One);
+
+            Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
+
+
+            if (gamePadState.Buttons.Back == ButtonState.Pressed)
+                Exit();
+
+            if (gamePadState.IsButtonDown(Buttons.LeftThumbstickUp))
+                Player.Accelerate();
+
+            if (gamePadState.IsButtonDown(Buttons.LeftThumbstickDown))
+                Player.Decelerate();
+
+            if (gamePadState.IsButtonDown(Buttons.LeftThumbstickLeft))
+                Player.StrafeLeft();
+
+            if (gamePadState.IsButtonDown(Buttons.LeftThumbstickRight))
+                Player.StrafeRight();
+
+            if (gamePadState.IsButtonDown(Buttons.Start) && previousGamePadState.IsButtonUp(Buttons.Start))
+                gameState = GameState.Paused;
+
+            if (gamePadState.IsButtonDown(Buttons.RightTrigger))
+            {
+                if (_reloadTime <= 0)
+                {
+                    if (MultiShot)
+                    {
+                        //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                        var s = Player.multiShot();
+                        if (s != null)
+                            shots.Add(s);
+                        var s2 = Player.multiShot();
+                        if (s2 != null)
+                            shots.Add(s2);
+                        _reloadTime = 10;
+                    }
+                    else
+                    {
+                        //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                        var s = Player.Shoot();
+                        if (s != null)
+                            shots.Add(s);
+                        _reloadTime = 10;
+                    }
+                }
+            }
+
+            if (gamePadState.IsButtonDown(Buttons.X) && _playerShieldCooldown <= 0)
+            {
+                _playerShieldTimer = 60;
+                _playerShieldCooldown = 300;
+            }
+
+            previousGamePadState = GamePad.GetState(PlayerIndex.One);
+
+            float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(-vector.Y, vector.X);
+        }
+
+        private void HandleKeyboardInput()
+        {
+            var keyboardState = Keyboard.GetState();
+            var mouseState = Mouse.GetState();
+            var mouseLocation = new Vector2(mouseState.X, mouseState.Y);
+            var direction = mouseLocation - Globals.ScreenCenter;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            if (keyboardState.IsKeyDown(Keys.W))
+                Player.Accelerate();
+
+            if (keyboardState.IsKeyDown(Keys.S))
+                Player.Decelerate();
+
+            if (keyboardState.IsKeyDown(Keys.A))
+                Player.StrafeLeft();
+
+            if (keyboardState.IsKeyDown(Keys.D))
+                Player.StrafeRight();
+
+            if (keyboardState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
+                gameState = GameState.Paused;
+            
+            Player.Rotation = GetRotationFromVector(direction);
+
+            previousKbState = Keyboard.GetState();
+
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                if (_reloadTime <= 0)
+                {
+                    if (MultiShot)
+                    {
+                        //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                        var s = Player.multiShot();
+                        if (s != null)
+                            shots.Add(s);
+                        var s2 = Player.multiShot();
+                        if (s2 != null)
+                            shots.Add(s2);
+                        _reloadTime = 10;
+                    }
+                    else
+                    {
+                        //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                        var s = Player.Shoot();
+                        if (s != null)
+                            shots.Add(s);
+                        _reloadTime = 10;
+                    }
+                }
+            }
+
+            if (keyboardState.IsKeyDown(Keys.C) && _playerShieldCooldown <= 0)
+            {
+                _playerShieldTimer = 60;
+                _playerShieldCooldown = 300;
+            }
+
+            float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
         }
 
         protected override void Draw(GameTime gameTime)
