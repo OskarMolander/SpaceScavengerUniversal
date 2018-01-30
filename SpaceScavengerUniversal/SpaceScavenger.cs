@@ -831,7 +831,7 @@ namespace Space_Scavenger
                 }
             }
 
-            if (exp.CurrentEnemiesKilled == 3)
+            if (exp.CurrentEnemiesKilled == 3 && bosses.Count == 0)
             {
                 var be = BossEnemy.SpawnBoss(this);
                 bosses.Add(be);
