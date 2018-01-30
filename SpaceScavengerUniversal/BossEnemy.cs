@@ -282,8 +282,7 @@ namespace Space_Scavenger
                         Speed = new Vector2(0, 0) /*new Vector2(0,-1)*/
                     };
             }
-
-            return null;
+            throw new Exception("This exception only occurs if a random number picked between 1-4 is either lower than 1 or higher than 4. It is pretty impressive to mess that up. This exception will never be thrown.");
         }
     }
 }

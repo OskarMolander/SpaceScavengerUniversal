@@ -41,8 +41,8 @@ namespace Space_Scavenger
         public int Health { get; set; }
         public int wantedAsteroids = 100;
 
-        public List<Asteroid> _MiniStroids = new List<Asteroid>();
-        public List<Asteroid> _nrofAsteroids = new List<Asteroid>();
+        public List<Asteroid> MiniAsteroids = new List<Asteroid>();
+        public List<Asteroid> Asteroids = new List<Asteroid>();
 
         public AsteroidComponent(Game game, Player Player, GameObject gameObject) 
         {
@@ -55,31 +55,31 @@ namespace Space_Scavenger
         {
             //     Debug.WriteLine(_nrofAsteroids[1].hpAsteroid);
 
-            if (_nrofAsteroids.Count < wantedAsteroids)
+            if (Asteroids.Count < wantedAsteroids)
                 {
 
                     AsteroidSpawner();
                 }
-                for (int i = 0; _MiniStroids.Count > i; i++)
+                for (int i = 0; MiniAsteroids.Count > i; i++)
                 {
-                    _MiniStroids[i].Position += _MiniStroids[i].Speed;
+                    MiniAsteroids[i].Position += MiniAsteroids[i].Speed;
                 }
-                foreach (var asteroid in _nrofAsteroids)
+                foreach (var asteroid in Asteroids)
                 {
                     var xDiffPlayer = Math.Abs(asteroid.Position.X - mygame.Player.Position.X);
                     var yDiffPlayer = Math.Abs(asteroid.Position.Y - mygame.Player.Position.Y);
-                asteroid.Position += asteroid.Speed;
+                    asteroid.Position += asteroid.Speed;
                     if (xDiffPlayer > 3000 || yDiffPlayer > 3000)
                     {
                         asteroid.IsDead = true;
                     }
                 }
-                for (int i = 0; i < _nrofAsteroids.Count; i++)
+                for (int i = 0; i < Asteroids.Count; i++)
                 {
 
-                if (_nrofAsteroids[i].hpAsteroid == 0)
+                if (Asteroids[i].hpAsteroid == 0)
                     {
-                        _nrofAsteroids.Remove(_nrofAsteroids[i]);
+                        Asteroids.Remove(Asteroids[i]);
                     }
                 }
             
@@ -89,10 +89,10 @@ namespace Space_Scavenger
             // TODO: Add your update logic here
         }
 
-        public void miniStroid(Vector2 aspos)
+        public void MiniStroid(Vector2 aspos)
         {
             
-            _MiniStroids.Add(new Asteroid()
+            MiniAsteroids.Add(new Asteroid()
             {
                 Timer = rand.Next(100, 300),
                 //vänster
@@ -116,7 +116,7 @@ namespace Space_Scavenger
             {
                 case 1:
 
-                        _nrofAsteroids.Add(new Asteroid()
+                        Asteroids.Add(new Asteroid()
                         {
 
                           //vänster
@@ -133,7 +133,7 @@ namespace Space_Scavenger
                     break;
                 case 2:
                     //höger
-                        _nrofAsteroids.Add(new Asteroid()
+                        Asteroids.Add(new Asteroid()
                         {
                             Radius = 38,
                             hpAsteroid = 10,
@@ -147,7 +147,7 @@ namespace Space_Scavenger
                     break;
                 case 3:
                     //upp
-                        _nrofAsteroids.Add(new Asteroid()
+                        Asteroids.Add(new Asteroid()
                         {
                             Radius = 38,
                             hpAsteroid = 10,
@@ -161,7 +161,7 @@ namespace Space_Scavenger
                     break;
                 case 4:
                     //ner
-                        _nrofAsteroids.Add(new Asteroid()
+                        Asteroids.Add(new Asteroid()
                         {
                             Radius = 38,
                             hpAsteroid = 10,
