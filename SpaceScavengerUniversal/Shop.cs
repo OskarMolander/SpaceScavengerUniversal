@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpaceScavengerUniversal;
 
 namespace Space_Scavenger
 {
@@ -51,39 +52,40 @@ namespace Space_Scavenger
 
         public override void Update(GameTime gameTime)
         {
-            var x = HoverTexture.Width + 10;
 
-               if ((int)gameTime.TotalGameTime.TotalMilliseconds % 20 == 0)
-               {
-                _state = Keyboard.GetState();
-                   _gpState = GamePad.GetState(PlayerIndex.One);
-                   if (_state.IsKeyDown(Keys.D) || _gpState.IsButtonDown(Buttons.LeftThumbstickRight) || _gpState.IsButtonDown(Buttons.DPadRight))
-                   {
+            if (App.IsXbox())
+            {
+                var x = HoverTexture.Width + 10;
+                if ((int)gameTime.TotalGameTime.TotalMilliseconds % 20 == 0)
+                {
+                    _state = Keyboard.GetState();
+                    _gpState = GamePad.GetState(PlayerIndex.One);
+                    if (_gpState.IsButtonDown(Buttons.LeftThumbstickRight) || _gpState.IsButtonDown(Buttons.DPadRight))
+                    {
 
-                        if(RectangleHover.X < 1120 + 2*x)
-                        RectangleHover.X += x/2;
+                        if (RectangleHover.X < 1120 + 2 * x)
+                            RectangleHover.X += x / 2;
 
-                   } 
-                   else if (_state.IsKeyDown(Keys.A) || _gpState.IsButtonDown(Buttons.LeftThumbstickLeft) || _gpState.IsButtonDown(Buttons.DPadLeft))
-                   {
-                       if(RectangleHover.X > 1120)
-                       RectangleHover.X -= x/2;
-                   }
+                    }
+                    else if (_gpState.IsButtonDown(Buttons.LeftThumbstickLeft) || _gpState.IsButtonDown(Buttons.DPadLeft))
+                    {
+                        if (RectangleHover.X > 1120)
+                            RectangleHover.X -= x / 2;
+                    }
 
-                   if (_state.IsKeyDown(Keys.S) || _gpState.IsButtonDown(Buttons.LeftThumbstickDown) || _gpState.IsButtonDown(Buttons.DPadDown))
-                   {
-                       if (RectangleHover.Y < 205 + 2*x)
-                           RectangleHover.Y += x / 2;
-                   }
-                   else if (_state.IsKeyDown(Keys.W) || _gpState.IsButtonDown(Buttons.LeftThumbstickUp) || _gpState.IsButtonDown(Buttons.DPadUp))
-                   {
-                       if (RectangleHover.Y > 205)
-                           RectangleHover.Y -= x / 2;
-                   }
-               }
+                    if (_gpState.IsButtonDown(Buttons.LeftThumbstickDown) || _gpState.IsButtonDown(Buttons.DPadDown))
+                    {
+                        if (RectangleHover.Y < 205 + 2 * x)
+                            RectangleHover.Y += x / 2;
+                    }
+                    else if (_gpState.IsButtonDown(Buttons.LeftThumbstickUp) || _gpState.IsButtonDown(Buttons.DPadUp))
+                    {
+                        if (RectangleHover.Y > 205)
+                            RectangleHover.Y -= x / 2;
+                    }
+                }
 
-           
-           
+            }
             base.LoadContent();
         }
 
