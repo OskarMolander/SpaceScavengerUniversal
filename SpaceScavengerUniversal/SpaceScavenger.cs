@@ -158,8 +158,7 @@ namespace Space_Scavenger
             gamestate = GameState.Menu;
             _shop = new Shop(this);
             Components.Add(_shop);
-            _shopItem = new ShopItem(this);
-            Components.Add(_shopItem);
+           
 
             fasterLaser = false;
 

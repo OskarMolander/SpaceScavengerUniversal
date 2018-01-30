@@ -12,121 +12,60 @@ namespace Space_Scavenger
 {
     public class Shop : DrawableGameComponent
     {
-        private SpriteBatch _spriteBatch;
+
         private readonly SpaceScavenger _myGame;
-        private Texture2D _shopPanel;
-        public Texture2D SmallPanel;
-        private SpriteFont _shopHeadlineFont;
+        private SpriteBatch _spriteBatch;
+
+        //Textures
+        private Texture2D _shopWindowTexture;
+        private Texture2D _itemBackground;
+        private Texture2D _hoverRectangleTexture;
+
+        //Fonts
+        private SpriteFont _itemDescFont;
+        private SpriteFont _shopHeaderFont;
         private SpriteFont _shopMoneyFont;
-        public Rectangle RectangleHover;
-        public Texture2D HoverTexture;
+        
+        //Rectangles
+        private Rectangle _shopWindowRectangle;
+        private Rectangle _hoverRectangle;
+
+
+        
         private KeyboardState _state;
         private GamePadState _gpState;
-        private SpriteFont _itemDescFont;
-        private string CloseShopString;
-       
-        
-        
+        //private string CloseShopString;
 
         public Shop(Game game) : base(game)
         {
             _myGame = (SpaceScavenger) game;
-            
-           
-            
         }
         protected override void LoadContent()
         {
+            //Spritebatch
             _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            _shopPanel = Game.Content.Load<Texture2D>("panel");
-            SmallPanel = Game.Content.Load<Texture2D>("blue_button10");
-            _shopHeadlineFont = Game.Content.Load<SpriteFont>("ShopHeadLine");
-            HoverTexture = Game.Content.Load<Texture2D>("glassPanel_projection");
+           
+            //Fonts
+            _shopHeaderFont = Game.Content.Load<SpriteFont>("ShopHeadLine");
             _shopMoneyFont = Game.Content.Load<SpriteFont>("ScoreFont");
             _itemDescFont = Game.Content.Load<SpriteFont>("ItemDescFont");
 
-           
-            
+            //Textures
+            _shopWindowTexture = Game.Content.Load<Texture2D>("panel");
+            _itemBackground = Game.Content.Load<Texture2D>("blue_button10");
+            _hoverRectangleTexture = Game.Content.Load<Texture2D>("glassPanel_projection");
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-
-            #region Xbox
-            if (App.IsXbox())
-            {
-                var x = HoverTexture.Width + 10;
-                if ((int)gameTime.TotalGameTime.TotalMilliseconds % 20 == 0)
-                {
-                    _state = Keyboard.GetState();
-                    _gpState = GamePad.GetState(PlayerIndex.One);
-                    if (_gpState.IsButtonDown(Buttons.LeftThumbstickRight) || _gpState.IsButtonDown(Buttons.DPadRight))
-                    {
-
-                        if (RectangleHover.X < 1120 + 2 * x)
-                            RectangleHover.X += x / 2;
-
-                    }
-                    else if (_gpState.IsButtonDown(Buttons.LeftThumbstickLeft) || _gpState.IsButtonDown(Buttons.DPadLeft))
-                    {
-                        if (RectangleHover.X > 1120)
-                            RectangleHover.X -= x / 2;
-                    }
-
-                    if (_gpState.IsButtonDown(Buttons.LeftThumbstickDown) || _gpState.IsButtonDown(Buttons.DPadDown))
-                    {
-                        if (RectangleHover.Y < 205 + 2 * x)
-                            RectangleHover.Y += x / 2;
-                    }
-                    else if (_gpState.IsButtonDown(Buttons.LeftThumbstickUp) || _gpState.IsButtonDown(Buttons.DPadUp))
-                    {
-                        if (RectangleHover.Y > 205)
-                            RectangleHover.Y -= x / 2;
-                    }
-                }
-            }
-            #endregion
-
-            #region PC
-
-            #endregion
             base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
+            
             _spriteBatch.Begin();
-
-            
-            _spriteBatch.Draw(_shopPanel, new Vector2(1100, 150), null, Color.White, 0f, Vector2.Zero, new Vector2(0.6f, 0.6f), SpriteEffects.None, 0f);
-            _spriteBatch.DrawString(_shopHeadlineFont, "SHOP", new Vector2(1130, 160), Color.White);
-            _spriteBatch.DrawString(_shopMoneyFont, "$" + _myGame.Exp.CurrentExp, new Vector2(1300, 625), Color.Green);
-            _spriteBatch.DrawString(_itemDescFont, "" + _myGame._shopItem.ItemDescriptionString, new Vector2(1130, 530), Color.Black);
-            _spriteBatch.DrawString(_itemDescFont, "Cost: " + _myGame._shopItem.ItemCost + "$", new Vector2(1130, 630), Color.Black);
-
-            
-
-            for (int i = 0; i < 3; i++)
-            {
-                _spriteBatch.Draw(SmallPanel, new Vector2(1120 + (i*110), 210), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 2), SpriteEffects.None, 0f);
-
-                    for (int k = 0; k < 2; k++)
-                    {
-                        _spriteBatch.Draw(SmallPanel, new Vector2(1120 + (i*110), 320), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 2), SpriteEffects.None, 0f);
-                       for (int l = 0; l < 2; l++)
-                       {
-                          for (int m = 0; m < 1; m++)
-                          {
-                                 _spriteBatch.Draw(SmallPanel, new Vector2(1120 + (i*110), 430), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 2), SpriteEffects.None, 0f);
-                          }
-                       }
-                    }
-            }
-            
-            _spriteBatch.Draw(HoverTexture, RectangleHover, Color.White);
-            _spriteBatch.DrawString(_shopMoneyFont,"Press E to close the shop", new Vector2(Globals.ScreenWidth / 2f - 300, Globals.ScreenHeight / 2f - 300), Color.White);
-
             _spriteBatch.End();
         }
     }
