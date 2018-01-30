@@ -151,44 +151,43 @@ namespace Space_Scavenger
         /// </summary>
         protected override void Initialize()
         {
-            exp = new Exp();
-            bombEnemy = new BombEnemy();
-            Player = new Player(this);
-            Enemy = new Enemy();
-            _treasureShip = new TreasureShip();
-            BossEnemy = new BossEnemy();
-            PowerUp = new PowerUp();
-            compass = new Compass();
-            bosscompass = new BossCompass();
-            exp = new Exp();
-            money = new Money();
-            _camera = new Camera(GraphicsDevice.Viewport);
-            Components.Add(Player);
-            _asteroid = new AsteroidComponent(this, Player, gameObject);
-            //Components.Add(asteroid);
-            _ui = new UserInterface(this);
-            _effects = new Effects(this);
-            Components.Add(_ui);
-            boost = new Boost(this);
-            Components.Add(boost);
-            Components.Add(_effects);
-            _startMenu = new StartMenu(this);
-            Components.Add(_startMenu);
-            _gameOverScreen = new GameOverScreen(this);
-            _winScreen = new WinScreen(this);
-            Components.Add(_winScreen);
-            Components.Add(_gameOverScreen);
-            gameState = GameState.Menu;
-            shop = new Shop(this);
-            Components.Add(shop);
-            ShopItem = new ShopItem(this);
-            Components.Add(ShopItem);
-
+            Player      = new Player(this);
+            Enemy       = new Enemy();
+            BossEnemy   = new BossEnemy();
+            PowerUp     = new PowerUp();
+            ShopItem    = new ShopItem(this);
             FasterLaser = false;
 
+            _treasureShip   = new TreasureShip();
+            _camera         = new Camera(GraphicsDevice.Viewport);
+            _asteroid       = new AsteroidComponent(this, Player, gameObject);
+            _ui             = new UserInterface(this);
+            _effects        = new Effects(this);
+            _startMenu      = new StartMenu(this);
+            _gameOverScreen = new GameOverScreen(this);
+            _winScreen      = new WinScreen(this);
+            
+            exp         = new Exp();
+            bombEnemy   = new BombEnemy();
+            compass     = new Compass();
+            bosscompass = new BossCompass();
+            money       = new Money();
+            boost       = new Boost(this);
+            shop        = new Shop(this);
+            gameState   = GameState.Menu;
 
-            gameObject = gameObject;
-            // TODO: Add your initialization logic here
+            //Components.Add(asteroid);
+            Components.Add(Player);
+            Components.Add(_ui);
+            Components.Add(boost);
+            Components.Add(_effects);
+            Components.Add(_startMenu);
+            
+            Components.Add(_winScreen);
+            Components.Add(_gameOverScreen);
+            Components.Add(shop);
+            Components.Add(ShopItem);
+            
             //graphics.IsFullScreen = true;
             base.Initialize();
         }
@@ -200,44 +199,46 @@ namespace Space_Scavenger
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch           = new SpriteBatch(GraphicsDevice);
             _backgroundSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _backgroundTexture = Content.Load<Texture2D>("backgroundNeon");
-            _laserTexture = Content.Load<Texture2D>("laserBlue");
-            _bombEnemyTexture = Content.Load<Texture2D>("ufoGreen");
-            //deathSound = Content.Load<SoundEffect>("DeathSound");
-            _powerUpHealth = Content.Load<Texture2D>("powerupRedPill");
-            _enemyTexture = Content.Load<Texture2D>("EnemyShipNeon");
-            _moneyTexture = Content.Load<Texture2D>("Money");
-            _shield = Content.Load<Texture2D>("Shield");
-            _treasureShipTexture = Content.Load<Texture2D>("TreasureShip");
-            bossShotTexture = Content.Load<Texture2D>("BossShotNeon");
-            bossShotTexture2 = Content.Load<Texture2D>("TreasureShot");
-            //laserEffect = Content.Load<SoundEffect>("laserShoot");
-            _enemyDamage = Content.Load<Texture2D>("burst");
-            _spaceStation = Content.Load<Texture2D>("spaceStation");
-            //EnemyShootEffect = Content.Load<SoundEffect>("enemyShoot");
-            _enemyLaserTexture = Content.Load<Texture2D>("laserRed");
-            _bossTexture = Content.Load<Texture2D>("ufoBlue");
-            _asteroid.asterTexture2D1 = Content.Load<Texture2D>("Meteor1Neon");
-            _asteroid.asterTexture2D2 = Content.Load<Texture2D>("Meteor2Neon");
-            _asteroid.asterTexture2D3 = Content.Load<Texture2D>("Meteor3Neon");
-            _asteroid.asterTexture2D4 = Content.Load<Texture2D>("Meteor4Neon");
+            _backgroundTexture         = Content.Load<Texture2D>("backgroundNeon");
+            _laserTexture              = Content.Load<Texture2D>("laserBlue");
+            _bombEnemyTexture          = Content.Load<Texture2D>("ufoGreen");
+            _powerUpHealth             = Content.Load<Texture2D>("powerupRedPill");
+            _enemyTexture              = Content.Load<Texture2D>("EnemyShipNeon");
+            _moneyTexture              = Content.Load<Texture2D>("Money");
+            _shield                    = Content.Load<Texture2D>("Shield");
+            _treasureShipTexture       = Content.Load<Texture2D>("TreasureShip");
+            _enemyDamage               = Content.Load<Texture2D>("burst");
+            _spaceStation              = Content.Load<Texture2D>("spaceStation");
+            _enemyLaserTexture         = Content.Load<Texture2D>("laserRed");
+            _bossTexture               = Content.Load<Texture2D>("ufoBlue");
+            _asteroid.asterTexture2D1  = Content.Load<Texture2D>("Meteor1Neon");
+            _asteroid.asterTexture2D2  = Content.Load<Texture2D>("Meteor2Neon");
+            _asteroid.asterTexture2D3  = Content.Load<Texture2D>("Meteor3Neon");
+            _asteroid.asterTexture2D4  = Content.Load<Texture2D>("Meteor4Neon");
             _asteroid.MinitETexture2D1 = Content.Load<Texture2D>("tMeteorNeon");
-            //PlayerDamage = Content.Load<SoundEffect>("PlayerDamage");
-            //PlayerHitAsteoid = Content.Load<SoundEffect>("PlayerHitAsteroid");
-            //ShieldRegenerating = Content.Load<SoundEffect>("ShieldRegenerating");
-            //ShieldDestroyed = Content.Load<SoundEffect>("ShieldDestroyed");
-            //ShieldUp = Content.Load<SoundEffect>("ShieldUp");
-            //HealthPickup = Content.Load<SoundEffect>("HealthPickup");
-            //MeteorExplosion = Content.Load<SoundEffect>("ExplosionMeteor");
-            //ShieldDamage = Content.Load<SoundEffect>("ShieldDamage");
 
-            //Assault = Content.Load<SoundEffect>("oblivion3");
-            //BackgroundSong = Content.Load<Song>("backgroundMusicNeon");
-            //agr = Content.Load<SoundEffect>("AGR");
-            MediaPlayer.IsRepeating = true;
+            bossShotTexture  = Content.Load<Texture2D>("BossShotNeon");
+            bossShotTexture2 = Content.Load<Texture2D>("TreasureShot");
+
+            //laserEffect        = Content.Load<SoundEffect>("laserShoot");
+            //EnemyShootEffect   = Content.Load<SoundEffect>("enemyShoot");
+            //deathSound         = Content.Load<SoundEffect>("DeathSound");
+            //PlayerDamage       = Content.Load<SoundEffect>("PlayerDamage");
+            //PlayerHitAsteoid   = Content.Load<SoundEffect>("PlayerHitAsteroid");
+            //ShieldRegenerating = Content.Load<SoundEffect>("ShieldRegenerating");
+            //ShieldDestroyed    = Content.Load<SoundEffect>("ShieldDestroyed");
+            //ShieldUp           = Content.Load<SoundEffect>("ShieldUp");
+            //HealthPickup       = Content.Load<SoundEffect>("HealthPickup");
+            //MeteorExplosion    = Content.Load<SoundEffect>("ExplosionMeteor");
+            //ShieldDamage       = Content.Load<SoundEffect>("ShieldDamage");
+            //Assault            = Content.Load<SoundEffect>("oblivion3");
+            //agr                = Content.Load<SoundEffect>("AGR");
+            //BackgroundSong     = Content.Load<Song>("backgroundMusicNeon");
+
+            //MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(BackgroundSong);
         }
 
@@ -771,18 +772,21 @@ namespace Space_Scavenger
                     bossShots.RemoveAll(bs => bs.IsDead);
                     enemyShots.RemoveAll(shot => shot.IsDead);
                     _enemies.RemoveAll(enemy => enemy.IsDead);
-
                     _asteroid._MiniStroids.RemoveAll(n => n.IsDead);
                     _asteroid._nrofAsteroids.RemoveAll(j => j.IsDead);
                     money.Moneyroids.RemoveAll(money => money.IsDead);
                     bosses.RemoveAll(b => b.IsDead);
+
                     Player.Update(gameTime);
                     _ui.Update(gameTime);
+
                     previousKbState = state;
+
                     boost.Update(gameTime);
                     _camera.Update(gameTime, Player);
                     money.Update(gameTime, this);
                     _gameOverScreen.Update(gameTime);
+
                     if (_reloadTime >= 0)
                         if (FasterLaser)
                             _reloadTime -= 1.6f;
