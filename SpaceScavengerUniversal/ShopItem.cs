@@ -228,6 +228,7 @@ namespace Space_Scavenger
                 #region 6-9 Weapons++
 
                 if (_myGame._shop.RectangleHover.Intersects(_rectangleItemSeven))
+                {
                     if (!_myGame.fasterLaser)
                     {
                         ItemDescriptionString = "Increased Laserspeed.";
@@ -240,9 +241,10 @@ namespace Space_Scavenger
                     }
                     else
                     {
-                        ItemCost = 300;
+                        ItemCost = 0;
                         ItemDescriptionString = "You've already " + "\r\n" + "bought this item";
                     }
+                }
 
 
                 else if (_myGame._shop.RectangleHover.Intersects(_rectangleItemEight))

@@ -57,25 +57,25 @@ namespace Space_Scavenger
                {
                 _state = Keyboard.GetState();
                    _gpState = GamePad.GetState(PlayerIndex.One);
-                   if (_state.IsKeyDown(Keys.Right) || _gpState.IsButtonDown(Buttons.LeftThumbstickRight) || _gpState.IsButtonDown(Buttons.DPadRight))
+                   if (_state.IsKeyDown(Keys.D) || _gpState.IsButtonDown(Buttons.LeftThumbstickRight) || _gpState.IsButtonDown(Buttons.DPadRight))
                    {
 
                         if(RectangleHover.X < 1120 + 2*x)
                         RectangleHover.X += x/2;
 
                    } 
-                   else if (_state.IsKeyDown(Keys.Left) || _gpState.IsButtonDown(Buttons.LeftThumbstickLeft) || _gpState.IsButtonDown(Buttons.DPadLeft))
+                   else if (_state.IsKeyDown(Keys.A) || _gpState.IsButtonDown(Buttons.LeftThumbstickLeft) || _gpState.IsButtonDown(Buttons.DPadLeft))
                    {
                        if(RectangleHover.X > 1120)
                        RectangleHover.X -= x/2;
                    }
 
-                   if (_state.IsKeyDown(Keys.Down) || _gpState.IsButtonDown(Buttons.LeftThumbstickDown) || _gpState.IsButtonDown(Buttons.DPadDown))
+                   if (_state.IsKeyDown(Keys.S) || _gpState.IsButtonDown(Buttons.LeftThumbstickDown) || _gpState.IsButtonDown(Buttons.DPadDown))
                    {
                        if (RectangleHover.Y < 205 + 2*x)
                            RectangleHover.Y += x / 2;
                    }
-                   else if (_state.IsKeyDown(Keys.Up) || _gpState.IsButtonDown(Buttons.LeftThumbstickUp) || _gpState.IsButtonDown(Buttons.DPadUp))
+                   else if (_state.IsKeyDown(Keys.W) || _gpState.IsButtonDown(Buttons.LeftThumbstickUp) || _gpState.IsButtonDown(Buttons.DPadUp))
                    {
                        if (RectangleHover.Y > 205)
                            RectangleHover.Y -= x / 2;

@@ -304,12 +304,13 @@ namespace Space_Scavenger
                         Player.StrafeRight();
 
 
-                    //var mouse = Mouse.GetState();
-                    //var mouseLoc = new Vector2(mouse.X, mouse.Y);
-                    //var direction = mouseLoc - Player.Position;
-                    //float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
+                    var mouse = Mouse.GetState();
+                    var mouseLoc = new Vector2(mouse.X, mouse.Y);
+                    var center = new Vector2(Globals.ScreenWidth / 2f, Globals.ScreenHeight / 2f);
+                    var direction = mouseLoc - center;
+                    float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
 
-                    //Player.Rotation = GetRotationFromVector(direction);
+                    Player.Rotation = GetRotationFromVector(direction);
 
 
 
@@ -320,7 +321,7 @@ namespace Space_Scavenger
 
                     _previousKbState = Keyboard.GetState();
                     _previousGpState = GamePad.GetState(PlayerIndex.One);
-                    if (state.IsKeyDown(Keys.Space) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightTrigger))
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightTrigger))
                         if (reloadTime <= 0)
                             if (multiShot)
                             {

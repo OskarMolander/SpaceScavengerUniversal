@@ -7,7 +7,7 @@ namespace Space_Scavenger
     public class Boost : DrawableGameComponent
     {
         private readonly SpaceScavenger _myGame;
-        private KeyboardState _previousKbState;
+        private MouseState _previousMouseState;
         private GamePadState _previousGpState;
         public int BoostRegenerationCoolDown;
 
@@ -23,14 +23,14 @@ namespace Space_Scavenger
 
         public override void Update(GameTime gameTime)
         {
-            var state = Keyboard.GetState();
+            var state = Mouse.GetState();
             var gpState = GamePad.GetState(PlayerIndex.One);
             if (NrOfBoosts > 0)
             {
                 if (BoostRegenerationCoolDown > 0)
                     BoostRegenerationCoolDown--;
 
-                if (state.IsKeyDown(Keys.X) && _previousKbState.IsKeyDown(Keys.X) != state.IsKeyDown(Keys.X) 
+                if (state.RightButton == ButtonState.Pressed && _previousMouseState.RightButton != ButtonState.Pressed
                     || gpState.IsButtonDown(Buttons.LeftTrigger) && _previousGpState.IsButtonDown(Buttons.LeftTrigger) != gpState.IsButtonDown(Buttons.LeftTrigger))
                 {
                     _myGame.Player.Speed =
@@ -58,7 +58,7 @@ namespace Space_Scavenger
                     BoostRegenerationCoolDown = 300;
                 }
             }
-            _previousKbState = state;
+            _previousMouseState = state;
             _previousGpState = gpState;
         }
     }
