@@ -53,6 +53,7 @@ namespace Space_Scavenger
         public override void Update(GameTime gameTime)
         {
 
+            #region Xbox
             if (App.IsXbox())
             {
                 var x = HoverTexture.Width + 10;
@@ -84,8 +85,12 @@ namespace Space_Scavenger
                             RectangleHover.Y -= x / 2;
                     }
                 }
-
             }
+            #endregion
+
+            #region PC
+
+            #endregion
             base.LoadContent();
         }
 
