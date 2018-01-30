@@ -17,8 +17,8 @@ namespace Space_Scavenger
         private SpriteBatch _spriteBatch;
 
         //Textures
-        private Texture2D _shopWindowTexture;
-        private Texture2D _itemBackground;
+        private Texture2D _mainWindowTexture;
+        private Texture2D _itemRectangleTexture;
         private Texture2D _hoverRectangleTexture;
 
         //Fonts
@@ -27,11 +27,10 @@ namespace Space_Scavenger
         private SpriteFont _shopMoneyFont;
         
         //Rectangles
-        private Rectangle _shopWindowRectangle;
+        private Rectangle _mainWindow;
+        private Rectangle _itemRectangle;
         private Rectangle _hoverRectangle;
 
-
-        
         private KeyboardState _state;
         private GamePadState _gpState;
         //private string CloseShopString;
@@ -40,6 +39,7 @@ namespace Space_Scavenger
         {
             _myGame = (SpaceScavenger) game;
         }
+
         protected override void LoadContent()
         {
             //Spritebatch
@@ -49,12 +49,20 @@ namespace Space_Scavenger
             _shopHeaderFont = Game.Content.Load<SpriteFont>("ShopHeadLine");
             _shopMoneyFont = Game.Content.Load<SpriteFont>("ScoreFont");
             _itemDescFont = Game.Content.Load<SpriteFont>("ItemDescFont");
+            
 
             //Textures
-            _shopWindowTexture = Game.Content.Load<Texture2D>("panel");
-            _itemBackground = Game.Content.Load<Texture2D>("blue_button10");
+            _mainWindowTexture = Game.Content.Load<Texture2D>("panel");
             _hoverRectangleTexture = Game.Content.Load<Texture2D>("glassPanel_projection");
-            base.LoadContent();
+            _itemRectangleTexture = Game.Content.Load<Texture2D>("itemrectangle");
+
+            //Rectangles
+            _mainWindow = new Rectangle(1220, 220, (int)(_mainWindowTexture.Width*0.75), (int)(_mainWindowTexture.Height * 0.75));
+            //for (int i = 0; i < 7; i++)
+            //{
+            //    _itemRectangle = new Rectangle(1250, 310 + i * _itemRectangleTexture.Height, (int)(_itemRectangleTexture.Width * 0.7), (int)(_itemRectangleTexture.Height * 0.8));
+            //}
+            //base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -64,8 +72,12 @@ namespace Space_Scavenger
 
         public override void Draw(GameTime gameTime)
         {
-            
             _spriteBatch.Begin();
+            _spriteBatch.Draw(_mainWindowTexture,_mainWindow, Color.White);
+            for (var i = 0; i < 7; i++)
+            {
+                _spriteBatch.Draw(_itemRectangleTexture,new Rectangle(1250, 310 + i*_itemRectangleTexture.Height, (int)(_itemRectangleTexture.Width * 0.7), (int)(_itemRectangleTexture.Height*0.8)), Color.White);    
+            }
             _spriteBatch.End();
         }
     }

@@ -110,7 +110,7 @@ namespace Space_Scavenger
             Content.RootDirectory = "Content";
         }
 
-        public ShopItem _shopItem { get; private set; }
+        //public ShopItem _shopItem { get; private set; }
         public bool fasterLaser { get; set; }
         public bool multiShot { get; set; }
         public float spaceStationRotation { get; set; }
@@ -807,7 +807,7 @@ namespace Space_Scavenger
                     }
                     Player.Speed = new Vector2(0, 0);
 
-                    _shopItem.Update(gameTime);
+                    //_shopItem.Update(gameTime);
                     _shop.Update(gameTime);
 
                     #endregion Shopping
@@ -1092,7 +1092,7 @@ namespace Space_Scavenger
 
                     _ui.Draw(gameTime);
                     _shop.Draw(gameTime);
-                    _shopItem.Draw(gameTime);
+                    //_shopItem.Draw(gameTime);
 
                     #endregion Shopping
 
