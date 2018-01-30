@@ -97,6 +97,7 @@ namespace Space_Scavenger
         private int wantedEnemies = 5;
         private readonly int wantedPowerUps = 5;
         private Vector2 _previousRightThumbstickState = new Vector2(float.MinValue, float.MinValue);
+        private bool bossHasSpawned = false;
 
         public SpaceScavenger()
         {
@@ -472,11 +473,13 @@ namespace Space_Scavenger
                                     bombships.Add(be);
                                 break;
                         }
-                    if (Exp.CurrentEnemiesKilled > 10)
+                    if (defeatedEnemies == 2 && !bossHasSpawned)
                     {
                         var be = BossEnemy.SpawnBoss(this);
-                        if (be != null)
-                            bosses.Add(be);
+                        while (be == null)
+                            be = BossEnemy.SpawnBoss(this);
+                        bosses.Add(be);
+                        bossHasSpawned = true;
                         Exp.CurrentEnemiesKilled = 0;
                     }
                     if (treasureShips.Count < 1)
@@ -659,6 +662,7 @@ namespace Space_Scavenger
                                 //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
                                 bomb.IsDead = true;
                                 Exp.CurrentScore += bomb.ScoreReward;
+                                defeatedEnemies++;
                                 Exp.CurrentEnemiesKilled++;
                             }
                             enemyHit = true;
@@ -864,6 +868,7 @@ namespace Space_Scavenger
                     asteroid._MiniStroids.Clear();
                     _enemies.Clear();
                     bosses.Clear();
+                    BossEnemy = null;
 
                     wantedEnemies = 5;
                     treasureShips.Clear();
