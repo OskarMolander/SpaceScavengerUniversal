@@ -14,7 +14,7 @@ namespace Space_Scavenger
         {
             MyGame = (SpaceScavenger)game;
 
-            MyGame.gamestate = GameState.Playing;
+            MyGame.gameState = GameState.Playing;
             int Spawnside = rnd.Next(1, 5);
             switch (Spawnside)
             {

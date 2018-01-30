@@ -20,7 +20,7 @@ namespace Space_Scavenger
         {
             MyGame = (SpaceScavenger)game;
 
-            MyGame.gamestate = GameState.Playing;
+            MyGame.gameState = GameState.Playing;
             int Spawnside = rnd.Next(1, 5);
             switch (Spawnside)
             {
@@ -142,7 +142,7 @@ namespace Space_Scavenger
                         var s = EnemyShoot();
                         if (s != null)
                         {
-                            MyGame.EnemyShots.Add(s);
+                            MyGame.enemyShots.Add(s);
                             if (MyGame.soundEffectTimer <= 0)
                             {
                                 //MyGame.EnemyShootEffect.Play(0.8f, 0.0f, 0.0f);

@@ -75,8 +75,8 @@ namespace Space_Scavenger
             _spriteBatch.DrawString(_scoreFont, "Shield: ", new Vector2(_position.X - 940, _position.Y - 490), Color.SkyBlue);
             _spriteBatch.DrawString(_healthFont, _myGame.Player.Shield * 10 + "%", new Vector2(_position.X - 810 + _healthbarMiddle.Width * _myGame.Player.MaxShield, _position.Y - 490), Color.White);
             //Score and Currency
-            _spriteBatch.DrawString(_scoreFont, "score: " + _myGame.Exp.CurrentScore,new Vector2(_position.X + 620, _position.Y - 530), Color.White );
-            _spriteBatch.DrawString(_scoreFont, "$: " + _myGame.Exp.CurrentExp, new Vector2(_position.X + 620, _position.Y - 495), Color.Green);
+            _spriteBatch.DrawString(_scoreFont, "score: " + _myGame.exp.CurrentScore,new Vector2(_position.X + 620, _position.Y - 530), Color.White );
+            _spriteBatch.DrawString(_scoreFont, "$: " + _myGame.exp.CurrentExp, new Vector2(_position.X + 620, _position.Y - 495), Color.Green);
             // Boost
             _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(_position.X - 940, _position.Y - 450), Color.White );
            // Shop

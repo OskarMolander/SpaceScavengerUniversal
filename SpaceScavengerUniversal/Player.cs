@@ -36,7 +36,6 @@ namespace Space_Scavenger
             Radius = 12;
             MaxHealth = Health;
             MaxShield = Shield;
-            
         }
 
         protected override void LoadContent()

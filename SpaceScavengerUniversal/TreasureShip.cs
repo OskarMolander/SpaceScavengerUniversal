@@ -22,8 +22,8 @@ namespace Space_Scavenger
                 if (sa1 != null)
                 {
                     sa1.Radius = 30;
-                    sa1.chosenTexture2D = MyGame.BossShotTexture2;
-                    MyGame.BossShots.Add(sa1);
+                    sa1.chosenTexture2D = MyGame.bossShotTexture2;
+                    MyGame.bossShots.Add(sa1);
                 }
                 ReloadTimer = 5;
             }
