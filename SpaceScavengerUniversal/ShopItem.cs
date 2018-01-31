@@ -94,8 +94,9 @@ namespace Space_Scavenger
                         if (_state.IsKeyDown(Keys.Space) || _gpState.IsButtonDown(Buttons.A))
                             if (_myGame.exp.CurrentExp >= ItemCost)
                             {
-                                _myGame.Player.MaxHealth = 10;
-                                _myGame.Player.Health = _myGame.Player.MaxHealth;
+                                int newMaxHealth = 10;
+                                _myGame.Player.Health = (int) (newMaxHealth * ((float)_myGame.Player.Health / _myGame.Player.MaxHealth));
+                                _myGame.Player.MaxHealth = newMaxHealth;
                                 _myGame.exp.CurrentExp -= 300;
                             }
                     }
@@ -113,8 +114,9 @@ namespace Space_Scavenger
                         if (_state.IsKeyDown(Keys.Space) || _gpState.IsButtonDown(Buttons.A))
                             if (_myGame.exp.CurrentExp >= ItemCost)
                             {
-                                _myGame.Player.MaxHealth = 15;
-                                _myGame.Player.Health = _myGame.Player.MaxHealth;
+                                int newMaxHealth = 15;
+                                _myGame.Player.Health = (int)(newMaxHealth * ((float)_myGame.Player.Health / _myGame.Player.MaxHealth));
+                                _myGame.Player.MaxHealth = newMaxHealth;
                                 _myGame.exp.CurrentExp -= 600;
                             }
                     }
@@ -137,8 +139,9 @@ namespace Space_Scavenger
                         if (_state.IsKeyDown(Keys.Space) || _gpState.IsButtonDown(Buttons.A))
                             if (_myGame.exp.CurrentExp >= ItemCost)
                             {
-                                _myGame.Player.MaxHealth = 20;
-                                _myGame.Player.Health = _myGame.Player.MaxHealth;
+                                int newMaxHealth = 20;
+                                _myGame.Player.Health = (int)(newMaxHealth * ((float)_myGame.Player.Health / _myGame.Player.MaxHealth));
+                                _myGame.Player.MaxHealth = newMaxHealth;
                                 _myGame.exp.CurrentExp -= 1000;
                             }
                     }
@@ -158,6 +161,7 @@ namespace Space_Scavenger
                 #region  3-6 Shield++
 
                 if (_myGame.shop.RectangleHover.Intersects(_rectangleItemFour))
+                {
                     if (_myGame.Player.MaxShield == 5)
                     {
                         ItemCost = 300;
@@ -175,7 +179,9 @@ namespace Space_Scavenger
                         ItemCost = 0;
                         ItemDescriptionString = "You've already " + "\r\n" + "bought this item";
                     }
+                }
                 else if (_myGame.shop.RectangleHover.Intersects(_rectangleItemFive))
+                {
                     if (_myGame.Player.MaxShield == 10)
                     {
                         ItemCost = 600;
@@ -198,8 +204,9 @@ namespace Space_Scavenger
                         ItemCost = 0;
                         ItemDescriptionString = "You've already " + "\r\n" + "bought this item";
                     }
-
+                }
                 else if (_myGame.shop.RectangleHover.Intersects(_rectangleItemSix))
+                {
                     if (_myGame.Player.MaxShield == 15)
                     {
                         ItemCost = 1000;
@@ -222,6 +229,7 @@ namespace Space_Scavenger
                         ItemCost = 0;
                         ItemDescriptionString = "You've already " + "\r\n" + "bought this item";
                     }
+                }
 
                 #endregion
 

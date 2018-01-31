@@ -263,8 +263,7 @@ namespace Space_Scavenger
                 case GameState.Menu:
                     #region Menu
 
-                    if (gamePadState.Buttons.Back == ButtonState.Pressed ||
-                        Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if (gamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                         Exit();
 
                     if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.IsButtonDown(Buttons.A))
@@ -346,11 +345,17 @@ namespace Space_Scavenger
                 Player.MaxShield = Player.Shield;
                 MultiShot = false;
                 FasterLaser = false;
+
                 money.Moneyroids.Clear();
+
                 exp.CurrentScore = 0;
                 exp.CurrentExp = 0;
+                exp.CurrentEnemiesKilled = 0;
+
                 bossKill = false;
+
                 //MediaPlayer.Play(_myGame.BackgroundSong);
+
                 gameState = GameState.Menu;
             }
 
@@ -381,10 +386,15 @@ namespace Space_Scavenger
                 Player.MaxShield = Player.Shield;
                 MultiShot = false;
                 FasterLaser = false;
+
                 money.Moneyroids.Clear();
+
                 exp.CurrentScore = 0;
                 exp.CurrentExp = 0;
+                exp.CurrentEnemiesKilled = 0;
+
                 //MediaPlayer.Play(_myGame.BackgroundSong);
+
                 gameState = GameState.Menu;
             }
             
@@ -663,22 +673,21 @@ namespace Space_Scavenger
         private void IncreaseAmountOfWantedEnemies()
         {
             _enemyAmountTimer--;
-            if (_enemyAmountTimer <= 0)
-            {
-                _wantedEnemies++;
-                _enemyAmountTimer = 600;
-            }
+
+            if (_enemyAmountTimer > 0)
+                return;
+
+            _wantedEnemies++;
+            _enemyAmountTimer = 600;
         }
 
         private void ShowBuyTextIfInRangeOfShop()
         {
-            bool IsInsideShopArea(IGameObject gameObject)
-            {
-                return gameObject.Position.X <= new Vector2(400, 0) .X
-                    && gameObject.Position.X >= new Vector2(-400, 0).X
-                    && gameObject.Position.Y <= new Vector2(0, 400) .Y + 400
-                    && gameObject.Position.Y >= new Vector2(0, -400).Y;
-            }
+            bool IsInsideShopArea(IGameObject obj) => 
+                       obj.Position.X <= new Vector2(400, 0) .X
+                    && obj.Position.X >= new Vector2(-400, 0).X
+                    && obj.Position.Y <= new Vector2(0, 400) .Y + 400
+                    && obj.Position.Y >= new Vector2(0, -400).Y;
 
             if (IsInsideShopArea(Player))
             {
@@ -838,9 +847,9 @@ namespace Space_Scavenger
                 exp.CurrentEnemiesKilled = 0;
             }
 
-            if (treasureShips.Count < 1)
+            if (treasureShips.Count < 100/*1*/)
             {
-                if (_rng.Next(0, 240) == 120)
+                if (_rng.Next(0, 4) == 1)//if (_rng.Next(0, 240) == 120)
                 {
                     var te = _treasureShip.SpawnTreasureShip(this);
                     if (te != null)
