@@ -10,16 +10,16 @@ using SpaceScavengerUniversal;
 
 namespace Space_Scavenger
 {
+
     public class Shop : DrawableGameComponent
     {
-
         private readonly SpaceScavenger _myGame;
         private SpriteBatch _spriteBatch;
+        private List<ShopTile> _shopTiles;
 
         //Textures
         private Texture2D _mainWindowTexture;
-        private Texture2D _itemRectangleTexture;
-        private Texture2D _hoverRectangleTexture;
+
 
         //Fonts
         private SpriteFont _itemDescFont;
@@ -28,16 +28,17 @@ namespace Space_Scavenger
         
         //Rectangles
         private Rectangle _mainWindow;
-        private Rectangle _itemRectangle;
-        private Rectangle _hoverRectangle;
 
-        private KeyboardState _state;
-        private GamePadState _gpState;
-        //private string CloseShopString;
 
         public Shop(Game game) : base(game)
-        {
+        {   
+            _shopTiles = new List<ShopTile>();
+            
             _myGame = (SpaceScavenger) game;
+            for (int i = 0; i < 7; i++)
+            {
+                _shopTiles.Add(new ShopTile(_myGame, 1250 ,300 + (i*80)));
+            }
         }
 
         protected override void LoadContent()
@@ -47,38 +48,40 @@ namespace Space_Scavenger
            
             //Fonts
             _shopHeaderFont = Game.Content.Load<SpriteFont>("ShopHeadLine");
-            _shopMoneyFont = Game.Content.Load<SpriteFont>("ScoreFont");
-            _itemDescFont = Game.Content.Load<SpriteFont>("ItemDescFont");
-            
+            //_shopMoneyFont = Game.Content.Load<SpriteFont>("ScoreFont");
+            //_itemDescFont = Game.Content.Load<SpriteFont>("ItemDescFont");
+            foreach (var shopTile in _shopTiles)
+            {
+                shopTile.LoadContent();
+            }
 
             //Textures
             _mainWindowTexture = Game.Content.Load<Texture2D>("panel");
-            _hoverRectangleTexture = Game.Content.Load<Texture2D>("glassPanel_projection");
-            _itemRectangleTexture = Game.Content.Load<Texture2D>("itemrectangle");
 
             //Rectangles
             _mainWindow = new Rectangle(1220, 220, (int)(_mainWindowTexture.Width*0.75), (int)(_mainWindowTexture.Height * 0.75));
-            //for (int i = 0; i < 7; i++)
-            //{
-            //    _itemRectangle = new Rectangle(1250, 310 + i * _itemRectangleTexture.Height, (int)(_itemRectangleTexture.Width * 0.7), (int)(_itemRectangleTexture.Height * 0.8));
-            //}
-            //base.LoadContent();
+
+
+            base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            base.LoadContent();
+            
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
+           
             _spriteBatch.Begin();
             _spriteBatch.Draw(_mainWindowTexture,_mainWindow, Color.White);
-            for (var i = 0; i < 7; i++)
-            {
-                _spriteBatch.Draw(_itemRectangleTexture,new Rectangle(1250, 310 + i*_itemRectangleTexture.Height, (int)(_itemRectangleTexture.Width * 0.7), (int)(_itemRectangleTexture.Height*0.8)), Color.White);    
-            }
+            _spriteBatch.DrawString(_shopHeaderFont, _myGame.Exp.CurrentExp + "$",new Vector2(1245, 240), Color.Green );
             _spriteBatch.End();
+            foreach (var shoptile in _shopTiles)
+            {
+                shoptile.Draw(gameTime);
+            }
         }
     }
 }
