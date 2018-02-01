@@ -32,7 +32,6 @@ namespace Space_Scavenger
         {
             explosionBatch.Begin();
             explosionBatch.Draw(enemyDamage, new Vector2(Position.X + enemyposition.X, Position.Y +enemyposition.Y));
-            Debug.WriteLine("Draw!");
             explosionBatch.End();
         }
 

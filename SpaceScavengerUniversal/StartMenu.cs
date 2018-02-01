@@ -65,9 +65,6 @@ namespace Space_Scavenger
 
         public override void Draw(GameTime gameTime)
         {
-            Vector2 textSize = _menufont.MeasureString("Pres Enter to start!");
-            Vector2 TextMiddlePoint = new Vector2(textSize.X / 2, textSize.Y / 2);
-            Vector2 textPosition = new Vector2((int)TextMiddlePoint.X - textSize.X, (int)TextMiddlePoint.Y - textSize.Y);
             _spriteBatch.Begin();
 
             startX = movingMenu.Position.X % _background.Width;

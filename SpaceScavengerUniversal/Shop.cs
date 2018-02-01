@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpaceScavengerUniversal;
 
 namespace Space_Scavenger
 {
@@ -118,7 +119,8 @@ namespace Space_Scavenger
             }
             
             _spriteBatch.Draw(HoverTexture, RectangleHover, Color.White);
-            _spriteBatch.DrawString(_shopMoneyFont,"Press E to close the shop", new Vector2(Globals.ScreenWidth / 2f - 300, Globals.ScreenHeight / 2f - 300), Color.White);
+            char button = App.IsXbox() || ControllerValidator.IsGamePadConnected() ? 'Y' : 'E';
+            _spriteBatch.DrawString(_shopMoneyFont,$"Press {button} to close the shop", new Vector2(Globals.ScreenWidth / 2f - 300, Globals.ScreenHeight / 2f - 300), Color.White);
 
             _spriteBatch.End();
         }

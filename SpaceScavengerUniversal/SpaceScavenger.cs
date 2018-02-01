@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Space_Scavenger
 {
@@ -265,7 +266,7 @@ namespace Space_Scavenger
 
                     if (gamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                         Exit();
-
+                    
                     if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.IsButtonDown(Buttons.A))
                         gameState = GameState.Playing;
 
@@ -323,49 +324,14 @@ namespace Space_Scavenger
                     break;
 
                 case GameState.GameOver:
-                    HandleGameOver();
+                    HandleGameOver(hasWonGame: false);
                     break;
                 case GameState.Winscreen:
-                    HandleGameWon();
+                    HandleGameOver(hasWonGame: true);
                     break;
             }
 
             base.Update(gameTime);
-        }
-
-        private void HandleGameWon()
-        {
-            if (HasPressedStart())
-            {
-                Player.Position = Vector2.Zero;
-                Player.Speed = Vector2.Zero;
-                Player.Health = 5;
-                Player.Shield = 5;
-                Player.MaxHealth = Player.Health;
-                Player.MaxShield = Player.Shield;
-                MultiShot = false;
-                FasterLaser = false;
-
-                money.Moneyroids.Clear();
-
-                exp.CurrentScore = 0;
-                exp.CurrentExp = 0;
-                exp.CurrentEnemiesKilled = 0;
-
-                bossKill = false;
-
-                //MediaPlayer.Play(_myGame.BackgroundSong);
-
-                gameState = GameState.Menu;
-            }
-
-            _asteroid.Asteroids.Clear();
-            _asteroid.MiniAsteroids.Clear();
-            _enemies.Clear();
-            bosses.Clear();
-            _wantedEnemies = 5;
-            treasureShips.Clear();
-            bossShots.Clear();
         }
 
         private bool HasPressedStart()
@@ -374,7 +340,7 @@ namespace Space_Scavenger
                 || (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A) && previousGamePadState.IsButtonUp(Buttons.A));
         }
 
-        private void HandleGameOver()
+        private void HandleGameOver(bool hasWonGame)
         {
             if (HasPressedStart())
             {
@@ -393,11 +359,13 @@ namespace Space_Scavenger
                 exp.CurrentExp = 0;
                 exp.CurrentEnemiesKilled = 0;
 
+                bossKill = !hasWonGame;
+
                 //MediaPlayer.Play(_myGame.BackgroundSong);
 
                 gameState = GameState.Menu;
             }
-            
+
             _asteroid.Asteroids.Clear();
             _asteroid.MiniAsteroids.Clear();
             _enemies.Clear();
@@ -407,6 +375,7 @@ namespace Space_Scavenger
             treasureShips.Clear();
             bossShots.Clear();
             playerShots.Clear();
+            enemyShots.Clear();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -683,15 +652,14 @@ namespace Space_Scavenger
 
         private void ShowBuyTextIfInRangeOfShop()
         {
-            bool IsInsideShopArea(IGameObject obj) => 
-                       obj.Position.X <= new Vector2(400, 0) .X
-                    && obj.Position.X >= new Vector2(-400, 0).X
-                    && obj.Position.Y <= new Vector2(0, 400) .Y + 400
-                    && obj.Position.Y >= new Vector2(0, -400).Y;
+            bool IsInsideShopArea(IGameObject obj) => obj.Position.X <=  400
+                                                   && obj.Position.X >= -400
+                                                   && obj.Position.Y <=  800
+                                                   && obj.Position.Y >= -400;
 
             if (IsInsideShopArea(Player))
             {
-                char button = App.IsXbox() ? 'Y' : 'E';
+                char button = App.IsXbox() || ControllerValidator.IsGamePadConnected() ? 'Y' : 'E';
                 _inRangeToBuyString = $"Press {button} to buy";
 
                 if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 ||
@@ -847,9 +815,9 @@ namespace Space_Scavenger
                 exp.CurrentEnemiesKilled = 0;
             }
 
-            if (treasureShips.Count < 100/*1*/)
+            if (treasureShips.Count < 1)
             {
-                if (_rng.Next(0, 4) == 1)//if (_rng.Next(0, 240) == 120)
+                if (_rng.Next(0, 240) == 120)
                 {
                     var te = _treasureShip.SpawnTreasureShip(this);
                     if (te != null)
