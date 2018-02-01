@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,8 +24,6 @@ namespace SpaceScavengerUniversal
         private SpriteFont _font;
         private readonly int Y;
         private int X;
-
-        
 
 
         public ShopTile(Game game, int x, int y) : base(game)
@@ -52,32 +51,24 @@ namespace SpaceScavengerUniversal
 
         public override void Update(GameTime gameTime)
         {
-            if (Hover(_rectangle))
-            {
-                _rectangleTexture = Game.Content.Load<Texture2D>("itemrectangle-hover");
-            }
-            else
-                _rectangleTexture = Game.Content.Load<Texture2D>("itemrectangle");
             base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime, string text)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_rectangleTexture,_rectangle,Color.White);
-            _spriteBatch.DrawString(_font, "Item", new Vector2(_rectangle.X / 2f, _rectangle.Y / 2f), Color.Red);
+            _spriteBatch.Draw(Hover(_rectangle) ? _rectangleHoverTexture : _rectangleTexture, _rectangle, Color.White);
+
+            
+            _spriteBatch.DrawString(_font, text, new Vector2(_rectangle.Center.X - 150,_rectangle.Center.Y - 10), new Color(205,0,183));
             _spriteBatch.End();
         }
 
-        public bool Hover(Rectangle rectangle)
-        {
-            if (new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1).Intersects(rectangle))
-            {
-                return true;
-            }
+        public Rectangle Rectangle => _rectangle;
 
-            return false;
-            
+        public static bool Hover(Rectangle rectangle)
+        {
+            return new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1).Intersects(rectangle);
         }
     }
 }

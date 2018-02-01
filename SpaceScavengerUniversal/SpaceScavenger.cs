@@ -82,7 +82,6 @@ namespace Space_Scavenger
         private int playerShieldCooldown;
         private int playerShieldTimer;
         private readonly Random rand = new Random();
-        private float reloadTime;
         private int shieldTime;
         public List<Shot> Shots = new List<Shot>();
         //public SoundEffect Sound, Agr;
@@ -111,7 +110,7 @@ namespace Space_Scavenger
         }
 
         //public ShopItem _shopItem { get; private set; }
-        public bool fasterLaser { get; set; }
+        
         public bool multiShot { get; set; }
         public float spaceStationRotation { get; set; }
         public float EnemyRotation { get; set; }
@@ -158,9 +157,9 @@ namespace Space_Scavenger
             gamestate = GameState.Menu;
             _shop = new Shop(this);
             Components.Add(_shop);
-           
 
-            fasterLaser = false;
+            
+            
 
 
             gameObject = gameObject;
@@ -321,7 +320,7 @@ namespace Space_Scavenger
                     _previousKbState = Keyboard.GetState();
                     _previousGpState = GamePad.GetState(PlayerIndex.One);
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.RightTrigger))
-                        if (reloadTime <= 0)
+                        if (Player.ReloadTime <= 0)
                             if (multiShot)
                             {
                                 //laserEffect.Play(0.2f, 0.0f, 0.0f);
@@ -331,7 +330,7 @@ namespace Space_Scavenger
                                 var s2 = Player.multiShot();
                                 if (s2 != null)
                                     Shots.Add(s2);
-                                reloadTime = 10;
+                                Player.ReloadTime = Player.NewReloadTime;
                             }
                             else
                             {
@@ -339,7 +338,7 @@ namespace Space_Scavenger
                                 var s = Player.Shoot();
                                 if (s != null)
                                     Shots.Add(s);
-                                reloadTime = 10;
+                                Player.ReloadTime = Player.NewReloadTime;
                             }
                     if (state.IsKeyDown(Keys.C) && playerShieldCooldown <= 0 || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X) && playerShieldCooldown <= 0)
                     {
@@ -726,7 +725,7 @@ namespace Space_Scavenger
                     }
 
 
-                    if (Player.Shield < 5 && shieldTime <= 0)
+                    if (Player.Shield < Player.MaxShield && shieldTime <= 0)
                     {
                         Player.Shield++;
                         shieldTime = 40;
@@ -759,11 +758,7 @@ namespace Space_Scavenger
                     _camera.Update(gameTime, Player);
                     Money.Update(gameTime, this);
                     _gameOverScreen.Update(gameTime);
-                    if (reloadTime >= 0)
-                        if (fasterLaser)
-                            reloadTime -= 1.6f;
-                        else
-                            reloadTime--;
+                    
                     if (playerShieldCooldown >= 0)
                         playerShieldCooldown--;
                     if (playerShieldTimer >= 0)

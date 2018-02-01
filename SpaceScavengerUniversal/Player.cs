@@ -24,7 +24,10 @@ namespace Space_Scavenger
         public int MaxShield { get; set; }
         public int lastShot = 1;
         private Space_Scavenger.GameState gameState;
-        
+        public float ReloadTime;
+        public float NewReloadTime;
+        //public bool FasterLaser { get; set; }
+
         private Texture2D playerTexture;
         private Texture2D healthTexture; 
 
@@ -36,7 +39,11 @@ namespace Space_Scavenger
             Radius = 12;
             MaxHealth = Health;
             MaxShield = Shield;
-            
+
+
+            NewReloadTime = 60;
+            ReloadTime = NewReloadTime;
+            //FasterLaser = false;
         }
 
         protected override void LoadContent()
@@ -73,43 +80,18 @@ namespace Space_Scavenger
             Speed -= new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * 0.30f;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (ReloadTime >= 0)
+            {
+                //if (FasterLaser)
+                //    ReloadTime -= 1.6f;
+                //else
+                    ReloadTime--;
+            }
+            base.Update(gameTime);
+        }
 
-        //public void Accelerate()
-        //{
-        //    Speed += new Vector2(0, 3 * MathHelper.PiOver2);
-        //    //Speed += new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)) * 0.30f;
-        //    Accelerating = true;
-        //}
-
-        //public void Decelerate()
-        //{
-        //    Speed -= new Vector2((float) Math.Cos(Rotation), (float) Math.Sin(Rotation)) * 0.30f;
-        //    Decelerating = true;
-        //}
-
-        //public void StrafeLeft()
-        //{
-        //    if (Rotation + MathHelper.PiOver2 > MathHelper.PiOver2 && Rotation < 3 * MathHelper.PiOver2)
-        //    {
-        //        Speed += new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)).Rotate(MathHelper.PiOver2) * 0.30f;
-        //    }
-        //    else
-        //    {
-        //        Speed += new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)).Rotate(-MathHelper.PiOver2) * 0.30f;
-        //    }
-        //}
-
-        //public void StrafeRight()
-        //{
-        //    if (Rotation + MathHelper.PiOver2 > MathHelper.PiOver2 && Rotation < 3 * MathHelper.PiOver2)
-        //    {
-        //        Speed += new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)).Rotate(- MathHelper.PiOver2) * 0.30f; 
-        //    }
-        //    else
-        //    {
-        //        Speed += new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)).Rotate(MathHelper.PiOver2) * 0.30f;
-        //    }
-        //}
         public Shot Shoot()
         {
 
