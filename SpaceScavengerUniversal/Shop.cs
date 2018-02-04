@@ -17,11 +17,13 @@ namespace Space_Scavenger
     {
         private readonly SpaceScavenger _myGame;
         private SpriteBatch _spriteBatch;
-        private List<ShopTile> _shopTiles;
-        private string[] _shopTileTexts; 
+        private readonly List<ShopTile> _shopTiles;
+        private readonly string[] _shopTileTexts;
+        private string[] _shopTileCosts;
         private ShopTile _shopTile;
 
         private MouseState _previousMState;
+        private int _itemCost;
 
         //Textures
         private Texture2D _mainWindowTexture;
@@ -39,9 +41,20 @@ namespace Space_Scavenger
         private bool _boostRank2;
         private bool _boostRank3;
 
+        private bool _movementSpeedRank1;
+        private bool _movementSpeedRank2;
+        private bool _movementSpeedRank3;
+
+
         private bool _reloadTimeRank1;
         private bool _reloadTimeRank2;
         private bool _reloadTimeRank3;
+
+        private bool _auraTimerRank1;
+        private bool _auraTimerRank2;
+        private bool _auraTimerRank3;
+
+
 
         //Fonts
         private SpriteFont _itemDescFont;
@@ -67,22 +80,33 @@ namespace Space_Scavenger
                 _shopTiles.Add(new ShopTile(_myGame, 1250 ,300 + (i*80)));
 
             }
+
+            _shopTileCosts = new string[_shopTiles.Count];
+            _shopTileCosts[0] = "300";
+            _shopTileCosts[1] = "300";
+            _shopTileCosts[2] = "300";
+            _shopTileCosts[3] = "300";
+            _shopTileCosts[4] = "300";
+            _shopTileCosts[5] = "300";
+            _shopTileCosts[6] = "300";
+
             _shopTileTexts = new string[_shopTiles.Count];
-            _shopTileTexts[0] = "Health";
-            _shopTileTexts[1] = "Shield";
-            _shopTileTexts[2] = "Boost";
-            _shopTileTexts[3] = "Movement";
-            _shopTileTexts[4] = "Reload Time";
+            _shopTileTexts[0] = "Health+";
+            _shopTileTexts[1] = "Shield+";
+            _shopTileTexts[2] = "Boost+";
+            _shopTileTexts[3] = "Movement Speed+";
+            _shopTileTexts[4] = "Reload Time-";
             _shopTileTexts[5] = "Multishot";
-            _shopTileTexts[6] = "Aura";
+            _shopTileTexts[6] = "Invincibility Aura+";
+
+            
 
             _healthRank1 = true;
             _shieldRank1 = true;
             _boostRank1 = true;
             _reloadTimeRank1 = true;
-            _nextHealthRankString = "Rank 2";
-            _nextShieldRankString = "Rank 2";
-            _nextBoostRankString = "Rank 2";
+            _movementSpeedRank1 = true;
+            _auraTimerRank1 = true;
 
         }
 
@@ -118,6 +142,9 @@ namespace Space_Scavenger
                 IsShieldButtonPressed();
                 IsBoostButtonPressed();
                 IsBlasterButtonPressed();
+                IsMovementButtonPressed();
+                IsMultishotButtonPressed();
+                //IsAuraButtonPressed();
                 _previousMState = Mouse.GetState(); 
             }
             base.Update(gameTime);
@@ -142,8 +169,7 @@ namespace Space_Scavenger
         {
             if (Hover(_shopTiles[0].Rectangle))
             {
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _previousMState.LeftButton != ButtonState.Pressed)
                 {
                     IncreaseHealth();
                 }
@@ -155,12 +181,16 @@ namespace Space_Scavenger
             if (_healthRank1)
             {
                 HealthToRank2();
+                _shopTileTexts[0] = "Health++";
             }
 
             else if (_healthRank2)
             {
                 HealthToRank3();
+                _shopTileTexts[0] = "Health (Max)";
             }   
+
+
         }
 
         private void HealthToRank2()
@@ -216,11 +246,13 @@ namespace Space_Scavenger
             if (_shieldRank1)
             {
                 ShieldToRank2();
+                _shopTileTexts[1] = "Shield++";
             }
 
             else if (_shieldRank2)
             {
                 ShieldToRank3();
+                _shopTileTexts[1] = "Shield (Max)";
             }
         }
 
@@ -278,11 +310,13 @@ namespace Space_Scavenger
             if (_boostRank1)
             {
                 BoostToRank2();
+                _shopTileTexts[2] = "Boost++";
             }
 
             else if (_boostRank2)
             {
                 BoostToRank3();
+                _shopTileTexts[2] = "Boost (Max)";
             }
         }
 
@@ -304,6 +338,47 @@ namespace Space_Scavenger
 
         //MovementSpeed++
 
+        private void IsMovementButtonPressed()
+        {
+            if (Hover(_shopTiles[3].Rectangle))
+            {
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                    _previousMState.LeftButton != ButtonState.Pressed)
+                {
+                    IncreaseMovementSpeed();
+                }
+            }
+        }
+
+        private void IncreaseMovementSpeed()
+        {
+            if (_movementSpeedRank1)
+            {
+                MovementSpeedToRank2();
+                _shopTileTexts[3] = "Movement Speed++";
+            }
+
+            else if (_movementSpeedRank2)
+            {
+                MovementSpeedToRank3();
+                _shopTileTexts[3] = "Movement Speed (Max)";
+            }
+        }
+
+        private void MovementSpeedToRank2()
+        {
+            _myGame.Player.SpeedMultiplier = 0.30f;
+            _movementSpeedRank1 = false;
+            _movementSpeedRank2 = true;
+        }
+
+        private void MovementSpeedToRank3()
+        {
+            _myGame.Player.SpeedMultiplier = 0.40f;
+            _movementSpeedRank2 = false;
+            _movementSpeedRank3 = true;
+        }
+
 
         //BlasterReload--
         private void IsBlasterButtonPressed()
@@ -323,11 +398,13 @@ namespace Space_Scavenger
             if (_reloadTimeRank1)
             {
                 ReloadToRank2();
+                _shopTileTexts[4] = "Reload Time--";
             }
 
             else if (_reloadTimeRank2)
             {
                 ReloadToRank3();
+                _shopTileTexts[4] = "Reload Time (Max)";
             }
         }
 
@@ -344,6 +421,65 @@ namespace Space_Scavenger
             _reloadTimeRank2 = false;
             _reloadTimeRank3 = true;
         }
+
+        //Multishot
+        private void IsMultishotButtonPressed()
+        {
+            if (Hover(_shopTiles[5].Rectangle))
+            {
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                    _previousMState.LeftButton != ButtonState.Pressed)
+                {
+                    EnableMultiShot();
+                }
+            }
+        }
+
+        private void EnableMultiShot()
+        {
+            _myGame.multiShot = true;
+            _shopTileTexts[5] = "Multishot Activated";
+        }
+
+        //Invincibility Aura
+        //private void IsAuraButtonPressed()
+        //{
+        //    if (Hover(_shopTiles[6].Rectangle))
+        //    {
+        //        if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+        //            _previousMState.LeftButton != ButtonState.Pressed)
+        //        {
+        //            DecreaseAuraTimer();
+        //        }
+        //    }
+        //}
+
+        //private void DecreaseAuraTimer()
+        //{
+        //    if (_auraTimerRank1)
+        //    {
+        //        AuraTimerToRank2();
+        //    }
+
+        //    else if (_auraTimerRank2)
+        //    {
+        //        AuraTimerToRank3();
+        //    }
+        //}
+
+        //private void AuraTimerToRank2()
+        //{
+        //    _myGame.NewPlayerInvincibilityTimer = 20;
+        //    _auraTimerRank1= false;
+        //    _auraTimerRank2 = true;
+        //}
+
+        //private void AuraTimerToRank3()
+        //{
+        //    _myGame.NewPlayerInvincibilityTimer = 10;
+        //    _auraTimerRank2 = false;
+        //    _auraTimerRank3 = true;
+        //}
 
     }
 }

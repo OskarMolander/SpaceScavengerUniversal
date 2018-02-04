@@ -26,6 +26,7 @@ namespace Space_Scavenger
         private Space_Scavenger.GameState gameState;
         public float ReloadTime;
         public float NewReloadTime;
+        public float SpeedMultiplier; 
         //public bool FasterLaser { get; set; }
 
         private Texture2D playerTexture;
@@ -43,7 +44,7 @@ namespace Space_Scavenger
 
             NewReloadTime = 60;
             ReloadTime = NewReloadTime;
-            //FasterLaser = false;
+            SpeedMultiplier = 0.20f;
         }
 
         protected override void LoadContent()
@@ -60,24 +61,24 @@ namespace Space_Scavenger
         }
         public void Accelerate()
         {
-            Speed += new Vector2(0, (float)Math.Sin(3 * MathHelper.PiOver2)) * 0.30f;
+            Speed += new Vector2(0, (float)Math.Sin(3 * MathHelper.PiOver2)) * SpeedMultiplier;
             Accelerating = true;
         }
 
         public void Decelerate()
         {
-            Speed -= new Vector2(0, (float)Math.Sin(3 * MathHelper.PiOver2)) * 0.30f;
+            Speed -= new Vector2(0, (float)Math.Sin(3 * MathHelper.PiOver2)) * SpeedMultiplier;
             Decelerating = true;
         }
 
         public void StrafeLeft()
         {
-            Speed += new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * 0.30f;
+            Speed += new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * SpeedMultiplier;
         }
 
         public void StrafeRight()
         {
-            Speed -= new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * 0.30f;
+            Speed -= new Vector2((float)Math.Cos(2 * MathHelper.PiOver2), 0) * SpeedMultiplier;
         }
 
         public override void Update(GameTime gameTime)

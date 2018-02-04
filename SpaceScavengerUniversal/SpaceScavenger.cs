@@ -78,7 +78,8 @@ namespace Space_Scavenger
         private Texture2D laserTexture;
         public Money Money;
         private Texture2D moneyTexture;
-        private int playerInvincibilityTimer = 100;
+        public int playerInvincibilityTimer = 100;
+        public int AuraDuration;
         private int playerShieldCooldown;
         private int playerShieldTimer;
         private readonly Random rand = new Random();
@@ -107,6 +108,8 @@ namespace Space_Scavenger
                 IsFullScreen = true
             };
             Content.RootDirectory = "Content";
+
+
         }
 
         //public ShopItem _shopItem { get; private set; }
@@ -701,6 +704,7 @@ namespace Space_Scavenger
                             }
 
                             playerInvincibilityTimer = 10;
+                            
                         }
                         bossShot.IsDead = true;
                     }
