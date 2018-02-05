@@ -82,25 +82,6 @@ namespace Space_Scavenger
             // Boost
             _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(_position.X - 940, _position.Y - 450), Color.White );
 
-            //Shoots
-            string addS;
-            if (_myGame.Player.NewReloadTime == 60)
-            {
-                addS = "";
-            }
-            else
-            {
-                addS = "s";
-                
-            }
-
-            _spriteBatch.DrawString(_scoreFont, (60 / _myGame.Player.NewReloadTime) + " shot" + addS + " " + "/" + " sec ", new Vector2(_position.X - 940, _position.Y - 400), Color.OrangeRed);
-            _spriteBatch.DrawString(_scoreFont, "Multishot = " +  _myGame.multiShot, new Vector2(_position.X - 940, _position.Y - 350), Color.OrangeRed);
-            _spriteBatch.DrawString(_scoreFont, _myGame.Player.SpeedMultiplier.ToString() , new Vector2(_position.X - 940, _position.Y - 300), Color.OrangeRed);
-            //_spriteBatch.DrawString(_scoreFont,  _myGame.playerInvincibilityTimer.ToString(), new Vector2(_position.X - 940, _position.Y - 250), Color.OrangeRed);
-            //_spriteBatch.DrawString(_scoreFont, "New " + _myGame.NewPlayerInvincibilityTimer, new Vector2(_position.X - 940, _position.Y - 200), Color.OrangeRed);
-
-            // Shop
 
             #endregion
 
