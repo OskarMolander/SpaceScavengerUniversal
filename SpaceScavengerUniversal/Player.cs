@@ -95,7 +95,7 @@ namespace Space_Scavenger
 
         public Shot Shoot()
         {
-
+            
             return new Shot()
             {
                 Position = Position,
