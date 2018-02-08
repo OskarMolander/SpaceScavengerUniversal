@@ -47,7 +47,6 @@ namespace Space_Scavenger
         private int _enemyAmountTimer = 600;
         private int _shoptimer;
 
-        private float _reloadTime;
 
         private bool _spawnBossCompass = true;
         private bool _enemyHit;
@@ -1144,14 +1143,6 @@ namespace Space_Scavenger
             if (_playerInvincibilityTimer >= 0)
                 _playerInvincibilityTimer--;
 
-            if (_reloadTime >= 0)
-            {
-                if (FasterLaser)
-                    _reloadTime -= 1.6f;
-                else
-                    _reloadTime--;
-            }
-
             if (_playerShieldCooldown >= 0)
                 _playerShieldCooldown--;
             if (_playerShieldTimer >= 0)
@@ -1164,7 +1155,7 @@ namespace Space_Scavenger
         {
             var gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
+           Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
 
             if (gamePadState.Buttons.Back == ButtonState.Pressed)
                 Exit();
@@ -1186,7 +1177,7 @@ namespace Space_Scavenger
 
             if (gamePadState.IsButtonDown(Buttons.RightTrigger))
             {
-                if (_reloadTime <= 0 && MultiShot)
+                if (Player.ReloadTime <= 0 && MultiShot)
                 {
                     //laserEffect.Play(0.2f, 0.0f, 0.0f);
                     var s = Player.multiShot();
@@ -1195,15 +1186,15 @@ namespace Space_Scavenger
                     var s2 = Player.multiShot();
                     if (s2 != null)
                         playerShots.Add(s2);
-                    _reloadTime = 10;
+                    Player.ReloadTime = Player.NewReloadTime;
                 }
-                else if (_reloadTime <= 0)
+                else if (Player.ReloadTime <= 0)
                 {
                     //laserEffect.Play(0.2f, 0.0f, 0.0f);
                     var s = Player.Shoot();
                     if (s != null)
                         playerShots.Add(s);
-                    _reloadTime = 10;
+                    Player.ReloadTime = Player.NewReloadTime;
                 }
             }
 
@@ -1224,6 +1215,7 @@ namespace Space_Scavenger
             var mouseState = Mouse.GetState();
             var mouseLocation = new Vector2(mouseState.X, mouseState.Y);
             var direction = mouseLocation - Globals.ScreenCenter;
+            float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
 
             Player.Rotation = GetRotationFromVector(direction);
 
@@ -1250,7 +1242,7 @@ namespace Space_Scavenger
             
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if (_reloadTime <= 0 && MultiShot)
+                if (Player.ReloadTime <= 0 && MultiShot)
                 {
                     //laserEffect.Play(0.2f, 0.0f, 0.0f);
                     var s = Player.multiShot();
@@ -1259,15 +1251,15 @@ namespace Space_Scavenger
                     var s2 = Player.multiShot();
                     if (s2 != null)
                         playerShots.Add(s2);
-                    _reloadTime = 10;
+                    Player.ReloadTime = Player.NewReloadTime;
                 }
-                else if (_reloadTime <= 0)
+                else if (Player.ReloadTime <= 0)
                 {
                     //laserEffect.Play(0.2f, 0.0f, 0.0f);
                     var s = Player.Shoot();
                     if (s != null)
                         playerShots.Add(s);
-                    _reloadTime = 10;
+                    Player.ReloadTime = Player.NewReloadTime;
                 }
             }
 
@@ -1279,7 +1271,7 @@ namespace Space_Scavenger
 
             previousKeyboardState = Keyboard.GetState();
 
-            float GetRotationFromVector(Vector2 vector) => (float)Math.Atan2(vector.Y, vector.X);
+            
         }
     }
 }
