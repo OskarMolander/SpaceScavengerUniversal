@@ -270,8 +270,15 @@ namespace Space_Scavenger
                     break;
 
                 case GameState.Playing:
-                    HandleKeyboardInput();
-                    HandleControllerInput();
+                   
+                    if (ControllerValidator.IsGamePadConnected())
+                    {
+                        HandleControllerInput(); 
+                    }
+                    else
+                    {
+                        HandleKeyboardInput();
+                    }
                     ShowBuyTextIfInRangeOfShop();
                     HandleCollisionDetection();
                     MovePlayer();
@@ -686,7 +693,7 @@ namespace Space_Scavenger
 
             if (IsInsideShopArea(Player))
             {
-                char button = App.IsXbox() ? 'Y' : 'E';
+                char button = App.IsXbox() || ControllerValidator.IsGamePadConnected() ? 'Y' : 'E';
                 _inRangeToBuyString = $"Press {button} to buy";
 
                 if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 ||
@@ -1155,7 +1162,8 @@ namespace Space_Scavenger
         {
             var gamePadState = GamePad.GetState(PlayerIndex.One);
 
-           Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
+            Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
+
 
             if (gamePadState.Buttons.Back == ButtonState.Pressed)
                 Exit();
