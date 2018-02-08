@@ -134,8 +134,8 @@ namespace Space_Scavenger
         {
             _graphics = new GraphicsDeviceManager(this)
             {
-                //PreferredBackBufferHeight = Globals.ScreenHeight,
-                //PreferredBackBufferWidth = Globals.ScreenWidth,
+                PreferredBackBufferWidth = Globals.ScreenWidth,
+                PreferredBackBufferHeight = Globals.ScreenHeight,
                 IsFullScreen = true
             };
             Content.RootDirectory = "Content";

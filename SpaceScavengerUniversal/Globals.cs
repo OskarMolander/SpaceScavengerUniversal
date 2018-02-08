@@ -3,10 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Space_Scavenger
 {
-    class Globals
+    public static class Globals
     {
-        public static int ScreenWidth => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        public static int ScreenHeight => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        public static int ScreenWidth  => (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width  / ScaleX);
+        public static int ScreenHeight => (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / ScaleY);
         public static Vector2 ScreenCenter => new Vector2(ScreenWidth / 2f, ScreenHeight / 2f);
+
+        public static float ScaleX = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width  / 1920f;
+        public static float ScaleY = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 1200f;
     }
 }
