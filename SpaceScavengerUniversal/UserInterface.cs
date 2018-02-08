@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Globalization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Space_Scavenger
@@ -91,32 +93,39 @@ namespace Space_Scavenger
             _spriteBatch.DrawString(_scoreFont, "$: " + _myGame.exp.CurrentExp, new Vector2(_position.X + 620, topY + step * 2), Color.Green);
             // Boost
             _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(50 * Globals.ScaleX, topY + step * 2), Color.White );
-           // Shop
-           
+
+
             #endregion
 
 
-            
+
             // Healthbar
-           #region DrawHealthBar
+            #region DrawHealthBar
 
             if (_myGame.Player.Health >= 1)
             {
                 float startX = 50 * Globals.ScaleX + _scoreFont.MeasureString("Health: ").X;
                 _spriteBatch.Draw(_healthBarLeft, new Vector2(startX - _healthBarLeft.Width * Globals.ScaleX, topY), Color.White);
 
+
                 for (int i = 0; i < _myGame.Player.Health - 2; i++)
                 {
                     //_spriteBatch.Draw(_healthbarMiddle, new Vector2(_position.X - 795 + (i*_healthbarMiddle.Width), _position.Y - 530), Color.White);
                     _spriteBatch.Draw(_healthbarMiddle, new Vector2(startX + (i * _healthbarMiddle.Width * Globals.ScaleX), topY), Color.White);
                 }
-               
-                
+
                 if (_myGame.Player.Health >= _myGame.Player.MaxHealth)
                 {
                     //_spriteBatch.Draw(_healthbarRight, new Vector2(_position.X - 795 + _healthbarMiddle.Width*(_myGame.Player.MaxHealth - 2) , _position.Y - 530), Color.White);
                     _spriteBatch.Draw(_healthbarRight, new Vector2(startX + _healthbarMiddle.Width * Globals.ScaleX * (_myGame.Player.MaxHealth - 1), topY), Color.White);
                 }
+               
+
+                //if (_myGame.Player.Health == _myGame.Player.MaxHealth)
+                //{
+                //    _spriteBatch.Draw(_healthbarRight, new Vector2(_position.X - 795 + _healthbarMiddle.Width*(_myGame.Player.MaxHealth - 2) , _position.Y - 530), Color.White);
+                //}
+
             }
 
             #endregion

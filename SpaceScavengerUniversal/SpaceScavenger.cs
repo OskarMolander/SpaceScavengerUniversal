@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -102,6 +103,8 @@ namespace Space_Scavenger
         public Texture2D bossShotTexture2;
 
         //private SoundEffect laserEffect;
+        public int playerInvincibilityTimer = 100;
+        public int AuraDuration;
         //public  SoundEffect Sound, Agr;
         //public  SoundEffect Assault;
         //public  SoundEffect EnemyShootEffect;
@@ -139,6 +142,8 @@ namespace Space_Scavenger
                 IsFullScreen = true
             };
             Content.RootDirectory = "Content";
+
+
         }
 
         /// <summary>
@@ -185,6 +190,8 @@ namespace Space_Scavenger
             Components.Add(_gameOverScreen);
             Components.Add(shop);
             Components.Add(ShopItem);
+            
+            
             
             //graphics.IsFullScreen = true;
             base.Initialize();
@@ -254,7 +261,7 @@ namespace Space_Scavenger
         ///     checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
+        protected async override void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
             var gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -264,11 +271,15 @@ namespace Space_Scavenger
                 case GameState.Menu:
                     #region Menu
 
-                    if (gamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
+                    
+
                         Exit();
                     
                     if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.IsButtonDown(Buttons.A))
-                        gameState = GameState.Playing;
+                    {
+                        await Task.Delay(300);
+                    }
+                    
 
                     #endregion
                     break;
@@ -682,6 +693,7 @@ namespace Space_Scavenger
                 else
                 {
                     _shoptimer--;
+                                Player.ReloadTime = Player.NewReloadTime;
                 }
             }
             else
@@ -1102,6 +1114,7 @@ namespace Space_Scavenger
                     }
 
                     _playerInvincibilityTimer = 10;
+                            
                 }
                 bossShot.IsDead = true;
             }
@@ -1126,7 +1139,7 @@ namespace Space_Scavenger
             }
 
 
-            if (Player.Shield < 5 && _shieldTime <= 0)
+                    if (Player.Shield < Player.MaxShield && shieldTime <= 0)
             {
                 Player.Shield++;
                 _shieldTime = 40;
@@ -1144,8 +1157,7 @@ namespace Space_Scavenger
             {
                 if (FasterLaser)
                     _reloadTime -= 1.6f;
-                else
-                    _reloadTime--;
+                    
             }
 
             if (_playerShieldCooldown >= 0)
