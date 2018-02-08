@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.Media.Devices;
 using Microsoft.Xna.Framework;
@@ -233,7 +234,7 @@ namespace Space_Scavenger
         ///     checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
+        protected async override void Update(GameTime gameTime)
         {
             var state = Keyboard.GetState();
 
@@ -248,12 +249,18 @@ namespace Space_Scavenger
 
                     #region Menu
 
+                    
+
                     if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                         Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Exit();
 
                     if (Keyboard.GetState().IsKeyDown(Keys.Space) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A))
+                    {
+                        await Task.Delay(300);
                         gamestate = GameState.Playing;
+                    }
+                    
 
                     #endregion
 

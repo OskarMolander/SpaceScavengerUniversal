@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceScavengerUniversal;
+using System.Diagnostics;
 
 using static SpaceScavengerUniversal.ShopTile;
 
@@ -19,13 +20,10 @@ namespace Space_Scavenger
         private SpriteBatch _spriteBatch;
         private readonly List<ShopTile> _shopTiles;
         private (string text, int price)[] _shopTileTexts;
-        private string[] _shopTileCosts;
-        private ShopTile _shopTile;
 
         private MouseState _previousMState;
-        private int _itemCost;
         private string _itemDescription;
-        private string _itemCostString;
+
 
         //Textures
         private Texture2D _mainWindowTexture;
@@ -61,7 +59,7 @@ namespace Space_Scavenger
         //Fonts
         private SpriteFont _itemDescFont;
         private SpriteFont _shopHeaderFont;
-        //private SpriteFont _shopMoneyFont;
+        private SpriteFont _scoreFont;
         
         //Rectangles
         private Rectangle _mainWindow;
@@ -83,25 +81,14 @@ namespace Space_Scavenger
 
             _shopTileTexts = new[]
             {
-                ("Health+                  ",300),
-                ("Shield+                  ",300),
-                ("Thrusters+              ",300),
-                ("Engine+",300),
-                ("Blasters+",300),
-                ("Weaponry+",300),
-                ("Health+",300)
+                ("Health+",       500),
+                ("Shield+",       500),
+                ("Boost+",        500),
+                ("Speed+",        500),
+                ("Faster reload+",500),
+                ("Multishot",     1000)
+
             };
-
-            //_shopTileTexts[1] = "Shield+";
-            //_shopTileTexts[2] = "Thrusters+";
-            //_shopTileTexts[3] = "Engine+";
-            //_shopTileTexts[4] = "Blasters+";
-            //_shopTileTexts[5] = "Weaponry+";
-
-            
-            //_shopTileTexts[6] = "Invincibility Aura+";
-
-            
 
             _healthRank1 = true;
             _shieldRank1 = true;
@@ -111,7 +98,7 @@ namespace Space_Scavenger
             _auraTimerRank1 = true;
 
             _itemDescription = "";
-            _itemCostString = "300$";
+
 
         }
 
@@ -122,7 +109,7 @@ namespace Space_Scavenger
            
             //Fonts
             _shopHeaderFont = Game.Content.Load<SpriteFont>("ShopHeadLine");
-            //_shopMoneyFont = Game.Content.Load<SpriteFont>("ScoreFont");
+            _scoreFont = Game.Content.Load<SpriteFont>("ScoreFont");
             _itemDescFont = Game.Content.Load<SpriteFont>("ItemDescFont");
             foreach (var shopTile in _shopTiles)
             {
@@ -149,7 +136,6 @@ namespace Space_Scavenger
                 IsBlasterButtonPressed();
                 IsMovementButtonPressed();
                 IsMultishotButtonPressed();
-                //IsAuraButtonPressed();
                 _previousMState = Mouse.GetState(); 
             }
             base.Update(gameTime);
@@ -163,12 +149,10 @@ namespace Space_Scavenger
             _spriteBatch.Draw(_mainWindowTexture,_mainWindow, Color.White);
             _spriteBatch.DrawString(_shopHeaderFont, _myGame.Exp.CurrentExp + "$",new Vector2(1245, 240), Color.Green );
             _spriteBatch.DrawString(_itemDescFont, _itemDescription, new Vector2(_mainWindow.Left * 1.03f , _mainWindow.Bottom * 0.90f), new Color(205, 0,183));
-            _spriteBatch.DrawString(_itemDescFont, _itemCostString, new Vector2(_mainWindow.Left * 1.03f, _mainWindow.Bottom * 0.96f), Color.Black);
             _spriteBatch.End();
             foreach (var shoptile in _shopTiles)
             {
-                shoptile.Draw(gameTime, _shopTileTexts[_shopTiles.IndexOf(shoptile)].text /*+ _shopTileTexts[_shopTiles.IndexOf(shoptile)].price*/);
-                
+                shoptile.Draw(gameTime, _shopTileTexts[_shopTiles.IndexOf(shoptile)].text, _shopTileTexts[_shopTiles.IndexOf(shoptile)].price + "$");
             }
         }
 
@@ -180,11 +164,11 @@ namespace Space_Scavenger
             {
                 if (_healthRank1)
                 {
-                    _itemDescription = "Upgrade HP to 100.";
+                    _itemDescription = "Increase max-health to 100.";
                 }
                 else if (_healthRank2)
                 {
-                    _itemDescription = "Upgrade HP to 200.";
+                    _itemDescription = "Increase max-health to 200.";
                 }
                 else if(_healthRank3)
                 {
@@ -192,7 +176,10 @@ namespace Space_Scavenger
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed && _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    IncreaseHealth();
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[0].price)
+                    {
+                        IncreaseHealth(); 
+                    }
                 }
             }
         }
@@ -202,13 +189,18 @@ namespace Space_Scavenger
             if (_healthRank1)
             {
                 HealthToRank2();
+                _myGame.Exp.CurrentExp -= _shopTileTexts[0].price;
+
                 _shopTileTexts[0].text = "Health++";
+                _shopTileTexts[0].price = 1000;
             }
 
             else if (_healthRank2)
             {
                 HealthToRank3();
+                _myGame.Exp.CurrentExp -= _shopTileTexts[0].price;
                 _shopTileTexts[0].text = "Health (Max)";
+                _shopTileTexts[0].price = 0;
             }   
 
 
@@ -257,11 +249,11 @@ namespace Space_Scavenger
             {
                 if (_shieldRank1)
                 {
-                    _itemDescription = "Upgrade Shield to 100.";
+                    _itemDescription = "Increase shield to 100.";
                 }
                 else if (_shieldRank2)
                 {
-                    _itemDescription = "Upgrade Shield to 200.";
+                    _itemDescription = "Increase shield to 200.";
                 }
                 else
                 {
@@ -270,7 +262,10 @@ namespace Space_Scavenger
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    IncreaseShield();
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[1].price)
+                    {
+                        IncreaseShield(); 
+                    } 
                 }
             } 
         }
@@ -280,13 +275,17 @@ namespace Space_Scavenger
             if (_shieldRank1)
             {
                 ShieldToRank2();
+                _myGame.Exp.CurrentExp -= _shopTileTexts[1].price;
                 _shopTileTexts[1].text = "Shield++";
+                _shopTileTexts[1].price = 1000;
             }
 
             else if (_shieldRank2)
             {
                 ShieldToRank3();
+                _myGame.Exp.CurrentExp -= _shopTileTexts[1].price;
                 _shopTileTexts[1].text = "Shield (Max)";
+                _shopTileTexts[1].price = 0;
             }
         }
 
@@ -334,20 +333,23 @@ namespace Space_Scavenger
             {
                 if (_boostRank1)
                 {
-                    _itemDescription = "Upgrade thrusters for an increased number \r\n of boosts to 2.";
+                    _itemDescription = "Increase number of boosts to 2.";
                 }
                 else if (_boostRank2)
                 {
-                    _itemDescription = "Upgrade thrusters for an increased number \r\n of boosts to 3.";
+                    _itemDescription = "Increase number of boosts to 3.";
                 }
                 else
                 {
-                    _itemDescription = "Thrusters fully upgraded!";
+                    _itemDescription = "Boost fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    IncreaseNrOfBoosts();
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[2].price)
+                    {
+                        IncreaseNrOfBoosts();
+                    }
                 }
             } 
         }
@@ -357,13 +359,17 @@ namespace Space_Scavenger
             if (_boostRank1)
             {
                 BoostToRank2();
-                _shopTileTexts[2].text = "Thrusters++";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[2].price;
+                _shopTileTexts[2].text = "Boost++";
+                _shopTileTexts[2].price = 1000;
             }
 
             else if (_boostRank2)
             {
                 BoostToRank3();
-                _shopTileTexts[2].text = "Thrusters (Max)";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[2].price;
+                _shopTileTexts[2].text = "Boost (Max)";
+                _shopTileTexts[2].price = 0;
             }
         }
 
@@ -387,25 +393,28 @@ namespace Space_Scavenger
 
         private void IsMovementButtonPressed()
         {
-            //_itemDescription = "";
             if (Hover(_shopTiles[3].Rectangle))
             {
                 if (_movementSpeedRank1)
                 {
-                    _itemDescription = "Upgrade engine to move at higher speeds.";
+                    _itemDescription = "Increase Speed.";
                 }
                 else if (_movementSpeedRank2)
                 {
-                    _itemDescription = "Upgrade engine to move at higher speeds.";
+                    _itemDescription = "Increase Speed."; ;
                 }
                 else
                 {
-                    _itemDescription = "Engine fully upgraded!";
+                    _itemDescription = "Speed fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    IncreaseMovementSpeed();
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[3].price)
+                    {
+                        IncreaseMovementSpeed();
+                    }
+                    
                 }
             }
         }
@@ -415,13 +424,17 @@ namespace Space_Scavenger
             if (_movementSpeedRank1)
             {
                 MovementSpeedToRank2();
-                _shopTileTexts[3].text = "Engine++";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[3].price;
+                _shopTileTexts[3].text = "Speed++";
+                _shopTileTexts[3].price = 1000;
             }
 
             else if (_movementSpeedRank2)
             {
                 MovementSpeedToRank3();
-                _shopTileTexts[3].text = "Engine (Max)";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[3].price;
+                _shopTileTexts[3].text = "Speed (Max)";
+                _shopTileTexts[3].price = 0;
             }
         }
 
@@ -448,20 +461,24 @@ namespace Space_Scavenger
             {
                 if (_reloadTimeRank1)
                 {
-                    _itemDescription = "Upgrade blasters to lower reloadtime.";
+                    _itemDescription = "Reload faster.";
                 }
                 else if (_reloadTimeRank2)
                 {
-                    _itemDescription = "Upgrade blasters to lower reloadtime.";
+                    _itemDescription = "Reload faster.";
                 }
                 else
                 {
-                    _itemDescription = "Blasters fully upgraded!";
+                    _itemDescription = "Faster reload fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    DecreaseBlasterReloadTime();
+
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[4].price)
+                    {
+                        DecreaseBlasterReloadTime();
+                    }
                 }
             }
         }
@@ -471,13 +488,17 @@ namespace Space_Scavenger
             if (_reloadTimeRank1)
             {
                 ReloadToRank2();
-                _shopTileTexts[4].text = "Reload Time--";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[4].price;
+                _shopTileTexts[4].text = "Faster reload++";
+                _shopTileTexts[4].price = 1000;
             }
 
             else if (_reloadTimeRank2)
             {
                 ReloadToRank3();
-                _shopTileTexts[4].text = "Reload Time (Max)";
+                _myGame.Exp.CurrentExp -= _shopTileTexts[4].price;
+                _shopTileTexts[4].text = "Faster reload (Max)";
+                _shopTileTexts[4].price = 0;
             }
         }
 
@@ -503,16 +524,21 @@ namespace Space_Scavenger
             {
                 if (!_myGame.multiShot)
                 {
-                    _itemDescription = "Upgrade weaponry to enable Multishot.";
+                    _itemDescription = "Unlock Multishot.";
                 }
                 else if(_myGame.multiShot)
                 {
-                    _itemDescription = "Weaponry fully upgraded," + "\r\n Multishot activated!";
+                    _itemDescription = "Multishot unlocked!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    EnableMultiShot();
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[5].price)
+                    {
+                        EnableMultiShot();
+                        
+                    }
+                    
                 }
             }
         }
@@ -520,7 +546,9 @@ namespace Space_Scavenger
         private void EnableMultiShot()
         {
             _myGame.multiShot = true;
+            _myGame.Exp.CurrentExp -= _shopTileTexts[5].price;
             _shopTileTexts[5].text = "Multishot Activated!";
+            _shopTileTexts[5].price = 0;
         }
 
         //Invincibility Aura

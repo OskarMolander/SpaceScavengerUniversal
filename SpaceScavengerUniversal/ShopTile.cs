@@ -23,13 +23,15 @@ namespace SpaceScavengerUniversal
         private Rectangle _rectangle;
         private SpriteFont _font;
         private readonly int Y;
-        private int X;
+        private readonly int X;
+
 
 
         public ShopTile(Game game, int x, int y) : base(game)
         {
             this.Y = y;
             this.X = x;
+
             _myGame = (SpaceScavenger)game;
         }
 
@@ -54,13 +56,12 @@ namespace SpaceScavengerUniversal
             base.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime, string text)
+        public void Draw(GameTime gameTime, string text, string cost)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(Hover(_rectangle) ? _rectangleHoverTexture : _rectangleTexture, _rectangle, Color.White);
-
-            
+            _spriteBatch.Draw(Hover(_rectangle) ? _rectangleHoverTexture : _rectangleTexture, _rectangle, Color.White );
             _spriteBatch.DrawString(_font, text, new Vector2(_rectangle.Center.X - 150,_rectangle.Center.Y - 10), new Color(205,0,183));
+            _spriteBatch.DrawString(_font, cost, new Vector2(_rectangle.Center.X + 115, _rectangle.Center.Y - 10), new Color(205, 0, 183));
             _spriteBatch.End();
         }
 
