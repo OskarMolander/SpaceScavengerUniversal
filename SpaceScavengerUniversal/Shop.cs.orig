@@ -7,9 +7,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceScavengerUniversal;
+<<<<<<< HEAD
+=======
 using System.Diagnostics;
 
 using static SpaceScavengerUniversal.ShopTile;
+>>>>>>> origin/feature-NavigateInShop
 
 namespace Space_Scavenger
 {
@@ -128,7 +131,7 @@ namespace Space_Scavenger
 
         public override void Update(GameTime gameTime)
         {
-            if (_myGame.gameState == GameState.Shopping)
+            if (_myGame.gamestate == GameState.Shopping)
             {
                 IsHealthButtonPressed();
                 IsShieldButtonPressed();
@@ -147,7 +150,7 @@ namespace Space_Scavenger
         {
             _spriteBatch.Begin();
             _spriteBatch.Draw(_mainWindowTexture,_mainWindow, Color.White);
-            _spriteBatch.DrawString(_shopHeaderFont, _myGame.exp.CurrentExp + "$",new Vector2(1245, 240), Color.Green );
+            _spriteBatch.DrawString(_shopHeaderFont, _myGame.Exp.CurrentExp + "$",new Vector2(1245, 240), Color.Green );
             _spriteBatch.DrawString(_itemDescFont, _itemDescription, new Vector2(_mainWindow.Left * 1.03f , _mainWindow.Bottom * 0.90f), new Color(205, 0,183));
             _spriteBatch.End();
             foreach (var shoptile in _shopTiles)
@@ -156,6 +159,30 @@ namespace Space_Scavenger
             }
         }
 
+<<<<<<< HEAD
+            
+            _spriteBatch.Draw(
+                _shopPanel, 
+                new Vector2(
+                    1100 * Globals.ScaleX, 
+                    150 * Globals.ScaleY
+                ), 
+                null, 
+                Color.White, 
+                0f, 
+                Vector2.Zero, 
+                new Vector2(
+                    0.6f * Globals.ScaleX, 
+                    0.6f * Globals.ScaleY
+                ), 
+                SpriteEffects.None, 
+                0f
+            );
+            _spriteBatch.DrawString(_shopHeadlineFont, "SHOP", new Vector2(1130 * Globals.ScaleX, 160 * Globals.ScaleY), Color.White);
+            _spriteBatch.DrawString(_shopMoneyFont, "$" + _myGame.exp.CurrentExp, new Vector2(1300, 625), Color.Green);
+            _spriteBatch.DrawString(_itemDescFont, "" + _myGame.ShopItem.ItemDescriptionString, new Vector2(1130, 530), Color.Black);
+            _spriteBatch.DrawString(_itemDescFont, "Cost: " + _myGame.ShopItem.ItemCost + "$", new Vector2(1130, 630), Color.Black);
+=======
         //Health++
         private void IsHealthButtonPressed()
         {
@@ -176,20 +203,21 @@ namespace Space_Scavenger
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed && _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[0].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[0].price)
                     {
                         IncreaseHealth(); 
                     }
                 }
             }
         }
+>>>>>>> origin/feature-NavigateInShop
 
         private void IncreaseHealth()
         {
             if (_healthRank1)
             {
                 HealthToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[0].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[0].price;
 
                 _shopTileTexts[0].text = "Health++";
                 _shopTileTexts[0].price = 1000;
@@ -198,7 +226,7 @@ namespace Space_Scavenger
             else if (_healthRank2)
             {
                 HealthToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[0].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[0].price;
                 _shopTileTexts[0].text = "Health (Max)";
                 _shopTileTexts[0].price = 0;
             }   
@@ -262,7 +290,7 @@ namespace Space_Scavenger
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[1].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[1].price)
                     {
                         IncreaseShield(); 
                     } 
@@ -275,7 +303,7 @@ namespace Space_Scavenger
             if (_shieldRank1)
             {
                 ShieldToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[1].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[1].price;
                 _shopTileTexts[1].text = "Shield++";
                 _shopTileTexts[1].price = 1000;
             }
@@ -283,7 +311,7 @@ namespace Space_Scavenger
             else if (_shieldRank2)
             {
                 ShieldToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[1].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[1].price;
                 _shopTileTexts[1].text = "Shield (Max)";
                 _shopTileTexts[1].price = 0;
             }
@@ -346,7 +374,7 @@ namespace Space_Scavenger
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[2].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[2].price)
                     {
                         IncreaseNrOfBoosts();
                     }
@@ -359,15 +387,22 @@ namespace Space_Scavenger
             if (_boostRank1)
             {
                 BoostToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[2].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[2].price;
                 _shopTileTexts[2].text = "Boost++";
                 _shopTileTexts[2].price = 1000;
             }
+<<<<<<< HEAD
+            
+            _spriteBatch.Draw(HoverTexture, RectangleHover, Color.White);
+            char button = App.IsXbox() || ControllerValidator.IsGamePadConnected() ? 'Y' : 'E';
+            _spriteBatch.DrawString(_shopMoneyFont,$"Press {button} to close the shop", new Vector2(Globals.ScreenWidth / 2f - 300, Globals.ScreenHeight / 2f - 300), Color.White);
+=======
+>>>>>>> origin/feature-NavigateInShop
 
             else if (_boostRank2)
             {
                 BoostToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[2].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[2].price;
                 _shopTileTexts[2].text = "Boost (Max)";
                 _shopTileTexts[2].price = 0;
             }
@@ -410,7 +445,7 @@ namespace Space_Scavenger
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[3].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[3].price)
                     {
                         IncreaseMovementSpeed();
                     }
@@ -424,7 +459,7 @@ namespace Space_Scavenger
             if (_movementSpeedRank1)
             {
                 MovementSpeedToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[3].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[3].price;
                 _shopTileTexts[3].text = "Speed++";
                 _shopTileTexts[3].price = 1000;
             }
@@ -432,7 +467,7 @@ namespace Space_Scavenger
             else if (_movementSpeedRank2)
             {
                 MovementSpeedToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[3].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[3].price;
                 _shopTileTexts[3].text = "Speed (Max)";
                 _shopTileTexts[3].price = 0;
             }
@@ -475,7 +510,7 @@ namespace Space_Scavenger
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
 
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[4].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[4].price)
                     {
                         DecreaseBlasterReloadTime();
                     }
@@ -488,7 +523,7 @@ namespace Space_Scavenger
             if (_reloadTimeRank1)
             {
                 ReloadToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[4].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[4].price;
                 _shopTileTexts[4].text = "Faster reload++";
                 _shopTileTexts[4].price = 1000;
             }
@@ -496,7 +531,7 @@ namespace Space_Scavenger
             else if (_reloadTimeRank2)
             {
                 ReloadToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[4].price;
+                _myGame.Exp.CurrentExp -= _shopTileTexts[4].price;
                 _shopTileTexts[4].text = "Faster reload (Max)";
                 _shopTileTexts[4].price = 0;
             }
@@ -522,18 +557,18 @@ namespace Space_Scavenger
             //_itemDescription = "";
             if (Hover(_shopTiles[5].Rectangle))
             {
-                if (!_myGame.MultiShot)
+                if (!_myGame.multiShot)
                 {
                     _itemDescription = "Unlock Multishot.";
                 }
-                else if(_myGame.MultiShot)
+                else if(_myGame.multiShot)
                 {
                     _itemDescription = "Multishot unlocked!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
                     _previousMState.LeftButton != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[5].price)
+                    if (_myGame.Exp.CurrentExp >= _shopTileTexts[5].price)
                     {
                         EnableMultiShot();
                         
@@ -545,8 +580,8 @@ namespace Space_Scavenger
 
         private void EnableMultiShot()
         {
-            _myGame.MultiShot = true;
-            _myGame.exp.CurrentExp -= _shopTileTexts[5].price;
+            _myGame.multiShot = true;
+            _myGame.Exp.CurrentExp -= _shopTileTexts[5].price;
             _shopTileTexts[5].text = "Multishot Activated!";
             _shopTileTexts[5].price = 0;
         }
