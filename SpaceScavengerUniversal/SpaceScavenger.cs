@@ -395,20 +395,29 @@ namespace Space_Scavenger
 
 
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null,
-                        _camera.transformn);
+                        _camera.TransformMatrix);
 
                     _backgroundSpriteBatch.Begin();
 
-                    startX = Player.Position.X % _backgroundTexture.Width;
-                    startY = Player.Position.Y % _backgroundTexture.Height;
+                    startX = Player.Position.X % (_backgroundTexture.Width * Globals.ScaleX);
+                    startY = Player.Position.Y % (_backgroundTexture.Height * Globals.ScaleY);
 
-                    for (var y = -startY - _backgroundTexture.Height;
-                        y < Globals.ScreenHeight;
-                        y += _backgroundTexture.Width)
-                        for (var x = -startX - _backgroundTexture.Width;
-                            x < Globals.ScreenWidth;
-                            x += _backgroundTexture.Width)
-                            _backgroundSpriteBatch.Draw(_backgroundTexture, new Vector2(x, y), Color.White);
+                    for (var y = -startY - _backgroundTexture.Height; y < Globals.ScreenHeight; y += _backgroundTexture.Height * Globals.ScaleY)
+                    {
+                        for (var x = -startX - _backgroundTexture.Width; x < Globals.ScreenWidth; x += _backgroundTexture.Width * Globals.ScaleX)
+                        {
+                            _backgroundSpriteBatch.Draw(_backgroundTexture, 
+                                new Vector2(x, y), 
+                                null, 
+                                Color.White, 
+                                0f,
+                                Vector2.Zero, 
+                                new Vector2(Globals.ScaleX, Globals.ScaleY), 
+                                SpriteEffects.None,
+                                1f
+                            );
+                        }
+                    }
 
                     _backgroundSpriteBatch.End();
 
@@ -416,7 +425,7 @@ namespace Space_Scavenger
                     {
                         _spriteBatch.Draw(_asteroid.MinitETexture2D1, mini.Position, null, Color.White,
                             _asteroid.Rotation + mini.RotationCounter,
-                            new Vector2(_asteroid.MinitETexture2D1.Width / 2f, _asteroid.MinitETexture2D1.Height / 2f), 1f,
+                            new Vector2(Globals.ScaleX * _asteroid.MinitETexture2D1.Width / 2f, Globals.ScaleY * _asteroid.MinitETexture2D1.Height / 2f), 1f,
                             SpriteEffects.None, 0f);
                         mini.RotationCounter += mini.addCounter;
                     }
@@ -427,37 +436,39 @@ namespace Space_Scavenger
 
 
                     for (var i = 0; i < _asteroid.Asteroids.Count; i++)
+                    {
+                        Texture2D texture = null;
                         switch (_asteroid.Asteroids[i].chosenTexture)
                         {
                             case 1:
-                                _spriteBatch.Draw(_asteroid.asterTexture2D1, _asteroid.Asteroids[i].Position, null,
-                                    Color.White, _asteroid.Rotation + _asteroid.Asteroids[i].RotationCounter,
-                                    new Vector2(_asteroid.asterTexture2D1.Width / 2f,
-                                        _asteroid.asterTexture2D1.Height / 2f), 1f, SpriteEffects.None, 0f);
-                                _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
+                                texture = _asteroid.asterTexture2D1;
                                 break;
                             case 2:
-                                _spriteBatch.Draw(_asteroid.asterTexture2D2, _asteroid.Asteroids[i].Position, null,
-                                    Color.White, _asteroid.Rotation + _asteroid.Asteroids[i].RotationCounter,
-                                    new Vector2(_asteroid.asterTexture2D2.Width / 2f,
-                                        _asteroid.asterTexture2D2.Height / 2f), 1f, SpriteEffects.None, 0f);
-                                _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
+                                texture = _asteroid.asterTexture2D2;
                                 break;
                             case 3:
-                                _spriteBatch.Draw(_asteroid.asterTexture2D3, _asteroid.Asteroids[i].Position, null,
-                                    Color.White, _asteroid.Rotation + _asteroid.Asteroids[i].RotationCounter,
-                                    new Vector2(_asteroid.asterTexture2D3.Width / 2f,
-                                        _asteroid.asterTexture2D3.Height / 2f), 1f, SpriteEffects.None, 0f);
-                                _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
+                                texture = _asteroid.asterTexture2D3;
                                 break;
                             case 4:
-                                _spriteBatch.Draw(_asteroid.asterTexture2D4, _asteroid.Asteroids[i].Position, null,
-                                    Color.White, _asteroid.Rotation + _asteroid.Asteroids[i].RotationCounter,
-                                    new Vector2(_asteroid.asterTexture2D4.Width / 2f,
-                                        _asteroid.asterTexture2D4.Height / 2f), 1f, SpriteEffects.None, 0f);
-                                _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
+                                texture = _asteroid.asterTexture2D4;
                                 break;
                         }
+                        _spriteBatch.Draw(
+                            texture, 
+                            _asteroid.Asteroids[i].Position, 
+                            null, 
+                            Color.White, 
+                            _asteroid.Rotation + _asteroid.Asteroids[i].RotationCounter,
+                            new Vector2(
+                                texture.Width / 2f  /** Globals.ScaleX*/,
+                                texture.Height / 2f /** Globals.ScaleY*/
+                            ),
+                            new Vector2(Globals.ScaleX, Globals.ScaleY), 
+                            SpriteEffects.None, 
+                            0f
+                        );
+                        _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
+                    }
 
                     foreach (var s in playerShots)
                         _spriteBatch.Draw(_laserTexture, s.Position, null, Color.White, s.Rotation + MathHelper.PiOver2,
@@ -536,7 +547,7 @@ namespace Space_Scavenger
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     base.Draw(gameTime);
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null,
-                        _camera.transformn);
+                        _camera.TransformMatrix);
 
                     _backgroundSpriteBatch.Begin();
 
@@ -782,7 +793,7 @@ namespace Space_Scavenger
             if (_spawnCompass)
             {
                 _spawnCompass = false;
-                compass = compass.compassSpawn();
+                compass = compass.CompassSpawn();
             }
 
             if (_spawnBossCompass)
@@ -913,43 +924,56 @@ namespace Space_Scavenger
             }
             foreach (var shot in playerShots)
             {
-                var enemy = _enemies.FirstOrDefault(d => d.CollidesWith(shot));
-                var hitasteroid = _asteroid.Asteroids.FirstOrDefault(e => e.CollidesWith(shot));
-                var hitBoss = bosses.FirstOrDefault(e => e.CollidesWith(shot));
-                var treasureHit = treasureShips.FirstOrDefault(te => te.CollidesWith(shot));
-                var bomb = bombEnemies.FirstOrDefault(beb => beb.CollidesWith(shot));
+                var hitEnemy       = _enemies
+                    .FirstOrDefault(d => d.CollidesWith(shot));
+                var hitAsteroid = _asteroid.Asteroids
+                    .FirstOrDefault(e => e.CollidesWith(shot));
+                var hitBoss     = bosses
+                    .FirstOrDefault(e => e.CollidesWith(shot));
+                var hitTreasureShip = treasureShips
+                    .FirstOrDefault(te => te.CollidesWith(shot));
+                var hitBomb        = bombEnemies
+                    .FirstOrDefault(beb => beb.CollidesWith(shot));
 
-                if (enemy != null)
+                if (hitEnemy != null)
                 {
-                    enemy.Health -= 1;
-                    if (enemy.Health <= 0)
+                    hitEnemy.Health -= 1;
+                    if (hitEnemy.Health <= 0)
                     {
                         //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
-                        enemy.IsDead = true;
+                        hitEnemy.IsDead = true;
                         defeatedEnemies += 1;
-                        exp.CurrentScore += enemy.ScoreReward;
+                        exp.CurrentScore += hitEnemy.ScoreReward;
                         for (var i = 0; i < _rng.Next(1, 5); i++)
-                            money.MoneyRoid(enemy.Position + new Vector2(_rng.Next(-50, 50)));
+                            money.MoneyRoid(hitEnemy.Position + new Vector2(_rng.Next(-50, 50)));
                         exp.CurrentEnemiesKilled++;
+
+                        for (int i = 0; i < 20; i++)
+                        {
+                            const int min = -300;
+                            const int max = 300;
+                            var randomVector = new Vector2(_rng.Next(min, max), _rng.Next(min, max));
+                            _enemies.Add(new Enemy { Position = hitEnemy.Position + randomVector });
+                        }
                     }
                     _enemyHit = true;
-                    _enemyPositionExplosion = enemy.Position;
+                    _enemyPositionExplosion = hitEnemy.Position;
                     shot.IsDead = true;
                 }
-                if (treasureHit != null)
+                if (hitTreasureShip != null)
                 {
-                    treasureHit.Health -= 1;
+                    hitTreasureShip.Health -= 1;
                     for (var i = 0; i < _rng.Next(1, 4); i++)
-                        money.MoneyRoid(treasureHit.Position + new Vector2(_rng.Next(-50, 50)));
-                    if (treasureHit.Health <= 0)
+                        money.MoneyRoid(hitTreasureShip.Position + new Vector2(_rng.Next(-50, 50)));
+                    if (hitTreasureShip.Health <= 0)
                     {
                         //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
-                        treasureHit.IsDead = true;
-                        exp.CurrentScore += treasureHit.ScoreReward;
+                        hitTreasureShip.IsDead = true;
+                        exp.CurrentScore += hitTreasureShip.ScoreReward;
                         exp.CurrentEnemiesKilled++;
                     }
                     _enemyHit = true;
-                    _enemyPositionExplosion = treasureHit.Position;
+                    _enemyPositionExplosion = hitTreasureShip.Position;
                     Debug.WriteLine(_enemyPositionExplosion);
                     shot.IsDead = true;
                 }
@@ -971,37 +995,37 @@ namespace Space_Scavenger
                     Debug.WriteLine(_enemyPositionExplosion);
                     shot.IsDead = true;
                 }
-                if (hitasteroid != null)
+                if (hitAsteroid != null)
                 {
-                    var xDiffPlayer = Math.Abs(hitasteroid.Position.X - Player.Position.X);
-                    var yDiffPlayer = Math.Abs(hitasteroid.Position.Y - Player.Position.Y);
+                    var xDiffPlayer = Math.Abs(hitAsteroid.Position.X - Player.Position.X);
+                    var yDiffPlayer = Math.Abs(hitAsteroid.Position.Y - Player.Position.Y);
                     if (yDiffPlayer < 1300 && xDiffPlayer < 1300)
                         //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
-                        _asteroid.MiniStroid(hitasteroid.Position);
-                    _asteroid.MiniStroid(hitasteroid.Position);
-                    _asteroid.MiniStroid(hitasteroid.Position);
-                    _asteroid.Asteroids.Remove(hitasteroid);
-                    exp.CurrentScore += hitasteroid.ScoreReward;
+                        _asteroid.MiniStroid(hitAsteroid.Position);
+                    _asteroid.MiniStroid(hitAsteroid.Position);
+                    _asteroid.MiniStroid(hitAsteroid.Position);
+                    _asteroid.Asteroids.Remove(hitAsteroid);
+                    exp.CurrentScore += hitAsteroid.ScoreReward;
                     Debug.WriteLine(exp.CurrentScore);
                     shot.IsDead = true;
                 }
                 shot.Timer--;
                 if (shot.Timer <= 0)
                     shot.IsDead = true;
-                if (bomb != null)
+                if (hitBomb != null)
                 {
-                    bomb.Health -= 1;
-                    if (bomb.Health <= 0)
+                    hitBomb.Health -= 1;
+                    if (hitBomb.Health <= 0)
                     {
                         for (var i = 0; i < _rng.Next(1, 4); i++)
-                            money.MoneyRoid(bomb.Position + new Vector2(_rng.Next(-100, 100)));
+                            money.MoneyRoid(hitBomb.Position + new Vector2(_rng.Next(-100, 100)));
                         //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
-                        bomb.IsDead = true;
-                        exp.CurrentScore += bomb.ScoreReward;
+                        hitBomb.IsDead = true;
+                        exp.CurrentScore += hitBomb.ScoreReward;
                         exp.CurrentEnemiesKilled++;
                     }
                     _enemyHit = true;
-                    _enemyPositionExplosion = bomb.Position;
+                    _enemyPositionExplosion = hitBomb.Position;
                     shot.IsDead = true;
                 }
             }

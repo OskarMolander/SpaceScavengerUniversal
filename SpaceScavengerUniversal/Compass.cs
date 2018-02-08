@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Space_Scavenger
 {
@@ -12,32 +8,29 @@ namespace Space_Scavenger
         public int type;
         public int chosenTexture;
 
-
-        public Compass compassSpawn()
+        public Compass CompassSpawn()
         {
-                    return new Compass()
-                    {
-                        Position = new Vector2(0, 0),
-                        Rotation = Rotation,
-                    };
-
+            return new Compass
+            {
+                Position = new Vector2(0, 0),
+                Rotation = Rotation,
+            };
         }
-
 
         public void Update(GameTime gametime, Game game)
         {
             MyGame = (SpaceScavenger)game;
-                    var targetrotation = (float)Math.Atan2(MyGame.Player.Position.X - Position.X,
-                        MyGame.Player.Position.Y - Position.Y);
 
-                    if (targetrotation < 360)
-                        Rotation += 360;
-                    else if (targetrotation > 360)
-                        Rotation -= 360;
+            var targetRotation = (float)Math.Atan2(MyGame.Player.Position.X - Position.X,
+                MyGame.Player.Position.Y - Position.Y
+            );
 
-                    Rotation = -targetrotation;
+            if (targetRotation < 360)
+                Rotation += 360;
+            else if (targetRotation > 360)
+                Rotation -= 360;
+
+            Rotation = -targetRotation;
         }
-
-
     }
 }

@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics; 
-using Microsoft.Xna.Framework.Input;
 
 namespace Space_Scavenger
 {
@@ -56,32 +50,33 @@ namespace Space_Scavenger
             //     Debug.WriteLine(_nrofAsteroids[1].hpAsteroid);
 
             if (Asteroids.Count < wantedAsteroids)
-                {
+            {
+                AsteroidSpawner();
+            }
 
-                    AsteroidSpawner();
-                }
-                for (int i = 0; MiniAsteroids.Count > i; i++)
-                {
-                    MiniAsteroids[i].Position += MiniAsteroids[i].Speed;
-                }
-                foreach (var asteroid in Asteroids)
-                {
-                    var xDiffPlayer = Math.Abs(asteroid.Position.X - mygame.Player.Position.X);
-                    var yDiffPlayer = Math.Abs(asteroid.Position.Y - mygame.Player.Position.Y);
-                    asteroid.Position += asteroid.Speed;
-                    if (xDiffPlayer > 3000 || yDiffPlayer > 3000)
-                    {
-                        asteroid.IsDead = true;
-                    }
-                }
-                for (int i = 0; i < Asteroids.Count; i++)
-                {
+            foreach (var miniAsteroid in MiniAsteroids)
+            {
+                miniAsteroid.Position += miniAsteroid.Speed;
+            }
 
+            foreach (var asteroid in Asteroids)
+            {
+                var xDiffPlayer = Math.Abs(asteroid.Position.X - mygame.Player.Position.X);
+                var yDiffPlayer = Math.Abs(asteroid.Position.Y - mygame.Player.Position.Y);
+                asteroid.Position += asteroid.Speed;
+                if (xDiffPlayer > 3000 || yDiffPlayer > 3000)
+                {
+                    asteroid.IsDead = true;
+                }
+            }
+
+            for (int i = 0; i < Asteroids.Count; i++)
+            {
                 if (Asteroids[i].hpAsteroid == 0)
-                    {
-                        Asteroids.Remove(Asteroids[i]);
-                    }
+                {
+                    Asteroids.Remove(Asteroids[i]);
                 }
+            }
             
 
 
@@ -125,7 +120,10 @@ namespace Space_Scavenger
                             ScoreReward = 10,
                             chosenTexture = randomTexture.Next(1,5),
                             addCounter = rand.Next(-677, 677) / 10000f,
-                            Position = new Vector2(mygame.Player.Position.X  - mygame.Window.ClientBounds.X - rand.Next(1000, Globals.ScreenWidth *3), mygame.Player.Position.Y - mygame.Window.ClientBounds.Height + rand.Next(-2400, 3600)),                          
+                            Position = new Vector2(
+                                mygame.Player.Position.X  - mygame.Window.ClientBounds.X - rand.Next(1000, Globals.ScreenWidth *3), 
+                                mygame.Player.Position.Y - mygame.Window.ClientBounds.Height + rand.Next(-2400, 3600)
+                            ),                          
                             Speed = new Vector2((float)Math.Cos(rand.Next(-5, 5)), (float)Math.Sin(rand.Next(-5, 5))),
                             Radius = 38
                         });

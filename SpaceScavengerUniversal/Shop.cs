@@ -93,8 +93,24 @@ namespace Space_Scavenger
             _spriteBatch.Begin();
 
             
-            _spriteBatch.Draw(_shopPanel, new Vector2(1100, 150), null, Color.White, 0f, Vector2.Zero, new Vector2(0.6f, 0.6f), SpriteEffects.None, 0f);
-            _spriteBatch.DrawString(_shopHeadlineFont, "SHOP", new Vector2(1130, 160), Color.White);
+            _spriteBatch.Draw(
+                _shopPanel, 
+                new Vector2(
+                    1100 * Globals.ScaleX, 
+                    150 * Globals.ScaleY
+                ), 
+                null, 
+                Color.White, 
+                0f, 
+                Vector2.Zero, 
+                new Vector2(
+                    0.6f * Globals.ScaleX, 
+                    0.6f * Globals.ScaleY
+                ), 
+                SpriteEffects.None, 
+                0f
+            );
+            _spriteBatch.DrawString(_shopHeadlineFont, "SHOP", new Vector2(1130 * Globals.ScaleX, 160 * Globals.ScaleY), Color.White);
             _spriteBatch.DrawString(_shopMoneyFont, "$" + _myGame.exp.CurrentExp, new Vector2(1300, 625), Color.Green);
             _spriteBatch.DrawString(_itemDescFont, "" + _myGame.ShopItem.ItemDescriptionString, new Vector2(1130, 530), Color.Black);
             _spriteBatch.DrawString(_itemDescFont, "Cost: " + _myGame.ShopItem.ItemCost + "$", new Vector2(1130, 630), Color.Black);
