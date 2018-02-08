@@ -118,7 +118,6 @@ namespace Space_Scavenger
 
         // Start with uppercase letter.
         #region Public properties
-        public ShopItem ShopItem { get; private set; }
         public Player Player { get; private set; }
         public Enemy Enemy { get; private set; }
         public BossEnemy BossEnemy { get; private set; }
@@ -152,7 +151,6 @@ namespace Space_Scavenger
             Enemy       = new Enemy();
             BossEnemy   = new BossEnemy();
             PowerUp     = new PowerUp();
-            ShopItem    = new ShopItem(this);
             FasterLaser = false;
 
             _treasureShip   = new TreasureShip();
@@ -183,7 +181,7 @@ namespace Space_Scavenger
             Components.Add(_winScreen);
             Components.Add(_gameOverScreen);
             Components.Add(shop);
-            Components.Add(ShopItem);
+
             
             //graphics.IsFullScreen = true;
             base.Initialize();
@@ -316,7 +314,6 @@ namespace Space_Scavenger
                     }
                     Player.Speed = new Vector2(0, 0);
 
-                    ShopItem.Update(gameTime);
                     shop.Update(gameTime);
 
                     #endregion Shopping
@@ -655,7 +652,6 @@ namespace Space_Scavenger
 
                     _ui.Draw(gameTime);
                     shop.Draw(gameTime);
-                    ShopItem.Draw(gameTime);
 
                     #endregion Shopping
                     break;

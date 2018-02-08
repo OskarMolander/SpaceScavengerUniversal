@@ -1,11 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Globalization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Space_Scavenger
 {
     public class UserInterface : DrawableGameComponent
     {
-        
+
         public SpriteFont _scoreFont { get; private set; }
         private SpriteFont _healthFont;
         private SpriteBatch _spriteBatch;
@@ -21,13 +23,13 @@ namespace Space_Scavenger
         private Texture2D CompassTexture;
         private readonly SpaceScavenger _myGame;
         private Vector2 _position;
-        
+
 
         public UserInterface(Game game) : base(game)
         {
             _position = new Vector2(Globals.ScreenWidth / 2f, Globals.ScreenHeight / 2f);
-            _myGame = (SpaceScavenger) game;
-            
+            _myGame = (SpaceScavenger)game;
+
         }
 
         protected override void LoadContent()
@@ -59,12 +61,12 @@ namespace Space_Scavenger
         {
 
             _spriteBatch.Begin();
-          
+
             //Font
             #region DrawFonts
             // Health
-            _spriteBatch.DrawString(_scoreFont, "Health: ", new Vector2(_position.X - 940, _position.Y - 530),new Color(255, 0, 226));
-            _spriteBatch.DrawString(_healthFont, _myGame.Player.Health * 10 + "%", new Vector2(_position.X - 810 + _healthbarMiddle.Width * _myGame.Player.MaxHealth, _position.Y - 530), Color.White);
+            _spriteBatch.DrawString(_scoreFont, "Health: ", new Vector2(_position.X - 940, _position.Y - 530), new Color(255, 0, 226));
+            _spriteBatch.DrawString(_healthFont, (_myGame.Player.Health * 10) + " " + "/" + " " + _myGame.Player.MaxHealth * 10, new Vector2(_position.X - 810 + _healthbarMiddle.Width * _myGame.Player.MaxHealth, _position.Y - 530), Color.White);
             // BossHealth
             if (_myGame.bosses.Count > 0)
             {
@@ -73,35 +75,43 @@ namespace Space_Scavenger
             }
             //Shield
             _spriteBatch.DrawString(_scoreFont, "Shield: ", new Vector2(_position.X - 940, _position.Y - 490), Color.SkyBlue);
-            _spriteBatch.DrawString(_healthFont, _myGame.Player.Shield * 10 + "%", new Vector2(_position.X - 810 + _healthbarMiddle.Width * _myGame.Player.MaxShield, _position.Y - 490), Color.White);
+            _spriteBatch.DrawString(_healthFont, (_myGame.Player.Shield * 10) + " " + "/" + " " + _myGame.Player.MaxShield * 10, new Vector2(_position.X - 810 + _healthbarMiddle.Width * _myGame.Player.MaxShield, _position.Y - 490), Color.White);
             //Score and Currency
-            _spriteBatch.DrawString(_scoreFont, "score: " + _myGame.exp.CurrentScore,new Vector2(_position.X + 620, _position.Y - 530), Color.White );
+            _spriteBatch.DrawString(_scoreFont, "score: " + _myGame.exp.CurrentScore, new Vector2(_position.X + 620, _position.Y - 530), Color.White);
             _spriteBatch.DrawString(_scoreFont, "$: " + _myGame.exp.CurrentExp, new Vector2(_position.X + 620, _position.Y - 495), Color.Green);
             // Boost
-            _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(_position.X - 940, _position.Y - 450), Color.White );
-           // Shop
-           
+            _spriteBatch.DrawString(_scoreFont, "Boost: ", new Vector2(_position.X - 940, _position.Y - 450), Color.White);
+
+
             #endregion
 
 
-            
+
             // Healthbar
-           #region DrawHealthBar
+            #region DrawHealthBar
 
             if (_myGame.Player.Health >= 1)
             {
                 _spriteBatch.Draw(_healthBarLeft, new Vector2(_position.X - 800, _position.Y - 530), Color.White);
 
+
                 for (int i = 0; i < _myGame.Player.Health - 2; i++)
                 {
-                    _spriteBatch.Draw(_healthbarMiddle, new Vector2(_position.X - 795 + (i*_healthbarMiddle.Width), _position.Y - 530), Color.White);
+                    _spriteBatch.Draw(_healthbarMiddle, new Vector2(_position.X - 795 + (i * _healthbarMiddle.Width), _position.Y - 530), Color.White);
                 }
-               
-                
+
                 if (_myGame.Player.Health >= _myGame.Player.MaxHealth)
                 {
-                    _spriteBatch.Draw(_healthbarRight, new Vector2(_position.X - 795 + _healthbarMiddle.Width*(_myGame.Player.MaxHealth - 2) , _position.Y - 530), Color.White);
+
+                    _spriteBatch.Draw(_healthbarRight, new Vector2(_position.X - 795 + _healthbarMiddle.Width * (_myGame.Player.MaxHealth - 2), _position.Y - 530), Color.White);
                 }
+
+
+                //if (_myGame.Player.Health == _myGame.Player.MaxHealth)
+                //{
+                //    _spriteBatch.Draw(_healthbarRight, new Vector2(_position.X - 795 + _healthbarMiddle.Width*(_myGame.Player.MaxHealth - 2) , _position.Y - 530), Color.White);
+                //}
+
             }
 
             #endregion
@@ -110,32 +120,32 @@ namespace Space_Scavenger
 
             // Shieldbar
             #region DrawShieldBar
-            
+
             if (_myGame.Player.Shield >= 1)
             {
-                 _spriteBatch.Draw(_shieldBarLeft, new Vector2(_position.X - 800, _position.Y - 490), Color.White);
+                _spriteBatch.Draw(_shieldBarLeft, new Vector2(_position.X - 800, _position.Y - 490), Color.White);
 
-                for (int i = 0; i < _myGame.Player.Shield - 2 ; i++)
+                for (int i = 0; i < _myGame.Player.Shield - 2; i++)
                 {
-                    _spriteBatch.Draw(_shieldBarMiddle, new Vector2(_position.X - 795 + (i*_shieldBarMiddle.Width), _position.Y - 490), Color.White);
-                }        
-         
-                 if (_myGame.Player.Shield >= _myGame.Player.MaxShield)
-                 {
-                     _spriteBatch.Draw(_shieldBarRight, new Vector2(_position.X - 795 + _shieldBarMiddle.Width * (_myGame.Player.MaxShield - 2), _position.Y - 490), Color.White);
-                 }
+                    _spriteBatch.Draw(_shieldBarMiddle, new Vector2(_position.X - 795 + (i * _shieldBarMiddle.Width), _position.Y - 490), Color.White);
+                }
+
+                if (_myGame.Player.Shield >= _myGame.Player.MaxShield)
+                {
+                    _spriteBatch.Draw(_shieldBarRight, new Vector2(_position.X - 795 + _shieldBarMiddle.Width * (_myGame.Player.MaxShield - 2), _position.Y - 490), Color.White);
+                }
             }
 
             #endregion
 
-            
-            
+
+
             // Boost
             #region Boost
 
             for (int i = 0; i < _myGame.boost.NrOfBoosts; i++)
             {
-                _spriteBatch.Draw(_boosticon, new Vector2(_position.X - 800 + i*(_boosticon.Width + 20), _position.Y - 455), Color.White);
+                _spriteBatch.Draw(_boosticon, new Vector2(_position.X - 800 + i * (_boosticon.Width + 20), _position.Y - 455), Color.White);
             }
 
             //if (_myGame.boost.BoostTime <= 0)
@@ -153,7 +163,7 @@ namespace Space_Scavenger
 
 
 
-                        _spriteBatch.Draw(CompassT, new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), null, Color.White, _myGame.compass.Rotation, new Vector2(CompassT.Width / 2f, CompassT.Height / 2f), 1f, SpriteEffects.None, 0f);
+            _spriteBatch.Draw(CompassT, new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), null, Color.White, _myGame.compass.Rotation, new Vector2(CompassT.Width / 2f, CompassT.Height / 2f), 1f, SpriteEffects.None, 0f);
             if (_myGame.bosses.Count > 0)
             {
                 _spriteBatch.Draw(bossCompassT, new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), null, Color.White, _myGame.bosscompass.Rotation, new Vector2(bossCompassT.Width / 2f, bossCompassT.Height / 2f), 1f, SpriteEffects.None, 0f);
@@ -163,6 +173,6 @@ namespace Space_Scavenger
             _spriteBatch.End();
         }
 
-        
+
     }
 }
