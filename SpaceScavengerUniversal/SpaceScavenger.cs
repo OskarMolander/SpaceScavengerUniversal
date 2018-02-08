@@ -37,6 +37,8 @@ namespace Space_Scavenger
         private Vector2           _enemyPositionExplosion = new Vector2(0, 0);
         private TreasureShip      _treasureShip;
 
+        private Vector2          _previousRightThumbstickState = new Vector2(float.MinValue, float.MinValue);
+
         private int _wantedEnemies = 5;
         private int _wantedPowerUps = 5;
         private int _soundTime = 0;
@@ -1161,8 +1163,19 @@ namespace Space_Scavenger
         private void HandleControllerInput()
         {
             var gamePadState = GamePad.GetState(PlayerIndex.One);
+            var rightThumbstickState = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
 
-            Player.Rotation = GetRotationFromVector(gamePadState.ThumbSticks.Right);
+           
+
+            if (rightThumbstickState.X == 0 && rightThumbstickState.Y == 0)
+            {
+                Player.Rotation = GetRotationFromVector(_previousRightThumbstickState);
+            }
+            else
+            {
+                Player.Rotation = GetRotationFromVector(rightThumbstickState);
+                _previousRightThumbstickState = rightThumbstickState;
+            }
 
 
             if (gamePadState.Buttons.Back == ButtonState.Pressed)
