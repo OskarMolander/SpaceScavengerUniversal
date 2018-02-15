@@ -247,12 +247,6 @@
 /processorParam:TextureFormat=Color
 /build:crossair_redOutline.png
 
-#begin DeathSound.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:DeathSound.mp3
-
 #begin enemyShip.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -821,4 +815,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:itemrectangle-hover.png
+
+#begin DeathSoundNew.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:DeathSoundNew.wav
 

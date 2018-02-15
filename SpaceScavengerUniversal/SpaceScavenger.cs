@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Space_Scavenger
 {
@@ -101,20 +102,18 @@ namespace Space_Scavenger
         public Texture2D bossShotTexture;
         public Texture2D bossShotTexture2;
 
-        //private SoundEffect laserEffect;
-        //public  SoundEffect Sound, Agr;
-        //public  SoundEffect Assault;
-        //public  SoundEffect EnemyShootEffect;
-        //public  SoundEffect PlayerHitAsteoid;
-        //public  SoundEffect PlayerDamage;
-        //public  SoundEffect ShieldDestroyed;
-        //public  SoundEffect ShieldRegenerating;
-        //public  SoundEffect ShieldUp;
-        //public  SoundEffect HealthPickup;
-        //public  SoundEffect MeteorExplosion;
-        //public  SoundEffect ShieldDamage;
-        //public  SoundEffect deathSound;
-        //public  Song        BackgroundSong; 
+        private SoundEffect laserEffect;
+        public  SoundEffect Sound, Agr;
+        public  SoundEffect EnemyShootEffect;
+        public  SoundEffect PlayerDamage;
+        public  SoundEffect ShieldRegenerating;
+        public  SoundEffect ShieldUp;
+        public  SoundEffect HealthPickup;
+        public  SoundEffect MeteorExplosion;
+        public  SoundEffect ShieldDamage;
+        public  SoundEffect deathSound;
+        public  SoundEffect        BackgroundSong;
+        private SoundEffectInstance backgroundSong;
         #endregion
 
         // Start with uppercase letter.
@@ -182,8 +181,8 @@ namespace Space_Scavenger
             Components.Add(_winScreen);
             Components.Add(_gameOverScreen);
             Components.Add(shop);
-
             
+
             //graphics.IsFullScreen = true;
             base.Initialize();
         }
@@ -219,23 +218,25 @@ namespace Space_Scavenger
             bossShotTexture  = Content.Load<Texture2D>("BossShotNeon");
             bossShotTexture2 = Content.Load<Texture2D>("TreasureShot");
 
-            //laserEffect        = Content.Load<SoundEffect>("laserShoot");
-            //EnemyShootEffect   = Content.Load<SoundEffect>("enemyShoot");
-            //deathSound         = Content.Load<SoundEffect>("DeathSound");
-            //PlayerDamage       = Content.Load<SoundEffect>("PlayerDamage");
-            //PlayerHitAsteoid   = Content.Load<SoundEffect>("PlayerHitAsteroid");
-            //ShieldRegenerating = Content.Load<SoundEffect>("ShieldRegenerating");
-            //ShieldDestroyed    = Content.Load<SoundEffect>("ShieldDestroyed");
-            //ShieldUp           = Content.Load<SoundEffect>("ShieldUp");
-            //HealthPickup       = Content.Load<SoundEffect>("HealthPickup");
-            //MeteorExplosion    = Content.Load<SoundEffect>("ExplosionMeteor");
-            //ShieldDamage       = Content.Load<SoundEffect>("ShieldDamage");
-            //Assault            = Content.Load<SoundEffect>("oblivion3");
-            //agr                = Content.Load<SoundEffect>("AGR");
-            //BackgroundSong     = Content.Load<Song>("backgroundMusicNeon");
+            laserEffect        = Content.Load<SoundEffect>("laserShoot");
+            EnemyShootEffect   = Content.Load<SoundEffect>("enemyShoot");
+            deathSound         = Content.Load<SoundEffect>("DeathSoundNew");
+            PlayerDamage       = Content.Load<SoundEffect>("PlayerDamage");
+            ShieldRegenerating = Content.Load<SoundEffect>("ShieldRegenerating");
+            ShieldUp           = Content.Load<SoundEffect>("ShieldUp");
+            HealthPickup       = Content.Load<SoundEffect>("HealthPickup");
+            MeteorExplosion    = Content.Load<SoundEffect>("ExplosionMeteor");
+            ShieldDamage       = Content.Load<SoundEffect>("ShieldDamage");
+            BackgroundSong     = Content.Load<SoundEffect>("backgroundMusicNeon");
 
             //MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(BackgroundSong);
+             backgroundSong = BackgroundSong.CreateInstance();
+
+           backgroundSong.IsLooped = true;
+           backgroundSong.Volume = 0.2f;
+           backgroundSong.Play();
+
         }
 
         /// <summary>
@@ -262,17 +263,26 @@ namespace Space_Scavenger
                 case GameState.Menu:
                     #region Menu
 
+                    if (backgroundSong.State != SoundState.Playing)
+                    {
+                        backgroundSong.IsLooped = true;
+                        backgroundSong.Volume = 0.2f;
+                        backgroundSong.Play();
+                    }
+
                     if (gamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                         Exit();
 
                     if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.IsButtonDown(Buttons.A))
+                    {
                         gameState = GameState.Playing;
+                    }
 
                     #endregion
                     break;
 
                 case GameState.Playing:
-                   
+                    backgroundSong.Resume();
                     if (ControllerValidator.IsGamePadConnected())
                     {
                         HandleControllerInput(); 
@@ -287,6 +297,7 @@ namespace Space_Scavenger
                     RemoveDeadGameObjects();
                     UpdateGameObjects(gameTime);
                     IncreaseAmountOfWantedEnemies();
+                    
                     if (bossKill)
                         gameState = GameState.Winscreen;
                     break;
@@ -294,9 +305,16 @@ namespace Space_Scavenger
                 case GameState.Paused:
                     #region Paused
 
+                   backgroundSong.Pause();
+
                     if (keyboardState.IsKeyDown(Keys.P) && previousKeyboardState.IsKeyUp(Keys.P) 
-                        || gamePadState.IsButtonDown(Buttons.Start) && previousGamePadState.IsButtonUp(Buttons.Start))
+                        || gamePadState.Buttons.Start == ButtonState.Pressed && previousGamePadState.Buttons.Start != ButtonState.Pressed)
+                    {
                         gameState = GameState.Playing;
+                    }
+                    
+                    
+                    
                     previousKeyboardState = keyboardState;
                     previousGamePadState = gamePadState;
 
@@ -361,9 +379,10 @@ namespace Space_Scavenger
                 bossKill = false;
 
                 //MediaPlayer.Play(_myGame.BackgroundSong);
-
+                
                 gameState = GameState.Menu;
             }
+            
             shop.ResetShopValues();
             _asteroid.Asteroids.Clear();
             _asteroid.MiniAsteroids.Clear();
@@ -372,6 +391,7 @@ namespace Space_Scavenger
             _wantedEnemies = 5;
             treasureShips.Clear();
             bossShots.Clear();
+            
         }
 
         private bool HasPressedStart()
@@ -401,7 +421,8 @@ namespace Space_Scavenger
                 exp.CurrentEnemiesKilled = 0;
 
                 //MediaPlayer.Play(_myGame.BackgroundSong);
-
+              
+               
                 gameState = GameState.Menu;
             }
             
@@ -414,6 +435,7 @@ namespace Space_Scavenger
             treasureShips.Clear();
             bossShots.Clear();
             playerShots.Clear();
+           backgroundSong.Stop();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -566,6 +588,11 @@ namespace Space_Scavenger
                     break;
 
                 case GameState.Paused:
+
+                    _spriteBatch.Begin();
+                    GraphicsDevice.Clear(Color.Black);
+                    _spriteBatch.DrawString(_ui._scoreFont, "Paused", new Vector2(Globals.ScreenCenter.X - 50, Globals.ScreenCenter.Y), Color.White );
+                    _spriteBatch.End();
                     break;
 
                 case GameState.Shopping:
@@ -591,8 +618,17 @@ namespace Space_Scavenger
 
                     _backgroundSpriteBatch.End();
 
-                    foreach (var mini in _asteroid.MiniAsteroids)
-                        _spriteBatch.Draw(_asteroid.MinitETexture2D1, mini.Position, Color.White);
+                  
+                    
+                    #region Money
+                    foreach (var money in money.Moneyroids)
+                        _spriteBatch.Draw(_moneyTexture, money.Position, null, Color.White,
+                            money.Rotation + money.RotationCounter,
+                            new Vector2(_moneyTexture.Width / 2f, _moneyTexture.Height / 2f), 0.7f, SpriteEffects.None, 0f); 
+                    #endregion
+
+                    #region Asteroids
+
                     for (var i = 0; i < _asteroid.Asteroids.Count; i++)
                         switch (_asteroid.Asteroids[i].chosenTexture)
                         {
@@ -625,26 +661,84 @@ namespace Space_Scavenger
                                 _asteroid.Asteroids[i].RotationCounter += _asteroid.Asteroids[i].addCounter;
                                 break;
                         }
+                    #endregion
 
+                    #region MiniAsteroids
+                    foreach (var mini in _asteroid.MiniAsteroids)
+                    {
+                        _spriteBatch.Draw(_asteroid.MinitETexture2D1, mini.Position, null, Color.White,
+                            _asteroid.Rotation + mini.RotationCounter,
+                            new Vector2(_asteroid.MinitETexture2D1.Width / 2f, _asteroid.MinitETexture2D1.Height / 2f), 1f,
+                            SpriteEffects.None, 0f);
+                        mini.RotationCounter += mini.addCounter;
+                    }
+                    #endregion
+
+                    #region PlayerShots
                     foreach (var s in playerShots)
                         _spriteBatch.Draw(_laserTexture, s.Position, null, Color.White, s.Rotation + MathHelper.PiOver2,
                             new Vector2(_laserTexture.Width / 2, _laserTexture.Height / 2), 1.0f, SpriteEffects.None, 0f);
 
+                    #endregion
+
+                    #region EnemyShots
                     foreach (var s in enemyShots)
                         _spriteBatch.Draw(_enemyLaserTexture, s.Position, null, Color.White, s.Rotation,
                             new Vector2(_laserTexture.Width / 2, _laserTexture.Height / 2), 1.0f, SpriteEffects.None, 0f);
 
+                    #endregion
+
+                    #region Enemies
                     foreach (var e in _enemies)
                         _spriteBatch.Draw(_enemyTexture, e.Position, null, Color.White, e.Rotation + MathHelper.PiOver2,
                             new Vector2(_enemyTexture.Width / 2, _enemyTexture.Height / 2), 0.4f, SpriteEffects.None, 0f);
 
+                    #endregion
+
+                    #region Boss
+                    foreach (var boss in bosses)
+                        _spriteBatch.Draw(_bossTexture, boss.Position, null, Color.White, EnemyRotation,
+                            new Vector2(_bossTexture.Width / 2f, _bossTexture.Height / 2f), 1f, SpriteEffects.None, 0f);
+
+                    #endregion
+                    
+                    #region BossShots
+
+                    foreach (var s in bossShots)
+                        _spriteBatch.Draw(s.chosenTexture2D, s.Position, null, Color.White, s.Rotation,
+                            new Vector2(bossShotTexture.Width / 2, bossShotTexture.Height / 2), 1.0f, SpriteEffects.None,
+                            0f); 
+                    #endregion
+
+                    #region Bombenemy
+
+                    foreach (var be in bombEnemies)
+                        _spriteBatch.Draw(_bombEnemyTexture, be.Position, null, Color.White, be.Rotation + 0.01f,
+                            new Vector2(_bombEnemyTexture.Width / 2, _bombEnemyTexture.Height / 2), 0.2f,
+                            SpriteEffects.None, 0f); 
+                    #endregion
+
+                    #region TreasureShip
+                    foreach (var treasureShip in treasureShips)
+                        _spriteBatch.Draw(_treasureShipTexture, treasureShip.Position, null, Color.White, EnemyRotation,
+                            new Vector2(_treasureShipTexture.Width / 2f, _treasureShipTexture.Height / 2f), 1f,
+                            SpriteEffects.None, 0f);
+
+                    #endregion
+
+                    #region Powerups
                     foreach (var p in _powerups)
                         _spriteBatch.Draw(_powerUpHealthTexture, p.Position, null, Color.White, p.Rotation + MathHelper.PiOver2,
                             new Vector2(_powerUpHealthTexture.Width / 2, _powerUpHealthTexture.Height / 2), 0.15f, SpriteEffects.None,
                             0f);
 
+                    #endregion
+
+                    #region SpaceStation
                     _spriteBatch.Draw(_spaceStationTexture, new Vector2(0, 0), null, Color.White, SpaceStationRotation,
-                        new Vector2(_spaceStationTexture.Width / 2f, _spaceStationTexture.Height / 2f), 2f, SpriteEffects.None, 0f);
+                                    new Vector2(_spaceStationTexture.Width / 2f, _spaceStationTexture.Height / 2f), 2f, SpriteEffects.None, 0f);
+
+                    #endregion
 
                     Player.Draw(_spriteBatch);
 
@@ -662,6 +756,7 @@ namespace Space_Scavenger
 
                     _ui.Draw(gameTime);
                     shop.Draw(gameTime);
+                    
 
                     #endregion Shopping
                     break;
@@ -879,7 +974,7 @@ namespace Space_Scavenger
                 var hitasteroid = _asteroid.Asteroids.FirstOrDefault(e => e.CollidesWith(Player));
                 if (hitasteroid != null)
                 {
-                    //PlayerHitAsteoid.Play();
+                    MeteorExplosion.Play(0.1f,0,0);
                     if (_playerInvincibilityTimer <= 0 && _playerShieldTimer <= 0)
                     {
                         if (Player.Shield <= 0)
@@ -916,7 +1011,7 @@ namespace Space_Scavenger
                 var hitPowerup = _powerups.FirstOrDefault(p => p.CollidesWith(Player));
                 if (hitPowerup == null)
                     continue;
-                //HealthPickup.Play();
+                HealthPickup.Play(0.5f,0,0);
                 Player.Health += 1;
                 Player.Health = Player.MaxHealth;
                 hitPowerup.IsDead = true;
@@ -928,6 +1023,7 @@ namespace Space_Scavenger
                 if (buHit == null) continue;
                 if (_playerInvincibilityTimer <= 0 && _playerShieldTimer <= 0)
                 {
+                    PlayerDamage.Play(0.2f,0,0);
                     if (Player.Shield <= 0)
                     {
                         Player.Health -= 3;
@@ -966,7 +1062,7 @@ namespace Space_Scavenger
                     enemy.Health -= 1;
                     if (enemy.Health <= 0)
                     {
-                        //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
+                        MeteorExplosion.Play(0.1f, 0.0f, 0.0f);
                         enemy.IsDead = true;
                         defeatedEnemies += 1;
                         exp.CurrentScore += enemy.ScoreReward;
@@ -985,14 +1081,14 @@ namespace Space_Scavenger
                         money.MoneyRoid(treasureHit.Position + new Vector2(_rng.Next(-50, 50)));
                     if (treasureHit.Health <= 0)
                     {
-                        //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
+                        MeteorExplosion.Play(0.1f, 0.0f, 0.0f);
                         treasureHit.IsDead = true;
                         exp.CurrentScore += treasureHit.ScoreReward;
                         exp.CurrentEnemiesKilled++;
                     }
                     _enemyHit = true;
                     _enemyPositionExplosion = treasureHit.Position;
-                    Debug.WriteLine(_enemyPositionExplosion);
+                   
                     shot.IsDead = true;
                 }
                 if (hitBoss != null)
@@ -1001,7 +1097,7 @@ namespace Space_Scavenger
                     if (hitBoss.Health <= 0)
                     {
                         _spawnBossCompass = true;
-                        //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
+                        MeteorExplosion.Play(0.1f, 0.0f, 0.0f);
                         hitBoss.IsDead = true;
                         bossKill = true;
                         exp.CurrentScore += hitBoss.ScoreReward;
@@ -1010,7 +1106,7 @@ namespace Space_Scavenger
                     }
                     _enemyHit = true;
                     _enemyPositionExplosion = hitBoss.Position;
-                    Debug.WriteLine(_enemyPositionExplosion);
+                    
                     shot.IsDead = true;
                 }
                 if (hitasteroid != null)
@@ -1018,7 +1114,7 @@ namespace Space_Scavenger
                     var xDiffPlayer = Math.Abs(hitasteroid.Position.X - Player.Position.X);
                     var yDiffPlayer = Math.Abs(hitasteroid.Position.Y - Player.Position.Y);
                     if (yDiffPlayer < 1300 && xDiffPlayer < 1300)
-                        //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
+                        MeteorExplosion.Play(0.1f, 0.0f, 0.0f);
                         _asteroid.MiniStroid(hitasteroid.Position);
                     _asteroid.MiniStroid(hitasteroid.Position);
                     _asteroid.MiniStroid(hitasteroid.Position);
@@ -1037,7 +1133,7 @@ namespace Space_Scavenger
                     {
                         for (var i = 0; i < _rng.Next(1, 4); i++)
                             money.MoneyRoid(bomb.Position + new Vector2(_rng.Next(-100, 100)));
-                        //MeteorExplosion.Play(0.5f, 0.0f, 0.0f);
+                        MeteorExplosion.Play(0.1f, 0.0f, 0.0f);
                         bomb.IsDead = true;
                         exp.CurrentScore += bomb.ScoreReward;
                         exp.CurrentEnemiesKilled++;
@@ -1082,13 +1178,13 @@ namespace Space_Scavenger
                 {
                     if (Player.Shield <= 0)
                     {
-                        //PlayerDamage.Play(0.5f, 0.0f, 0.0f);
+                        PlayerDamage.Play(0.2f, 0.0f, 0.0f);
                         Player.Health -= 1;
                         _shieldTime = 500;
                     }
                     else
                     {
-                        //ShieldDamage.Play(0.5f, 0.0f, 0.0f);
+                        ShieldDamage.Play(0.5f, 0.0f, 0.0f);
                         Player.Shield--;
                         _shieldTime = 500;
                     }
@@ -1104,13 +1200,13 @@ namespace Space_Scavenger
                 {
                     if (Player.Shield <= 0)
                     {
-                        //PlayerDamage.Play(0.5f, 0.0f, 0.0f);
+                       PlayerDamage.Play(0.2f, 0.0f, 0.0f);
                         Player.Health -= 2;
                         _shieldTime = 500;
                     }
                     else
                     {
-                        //ShieldDamage.Play(0.5f, 0.0f, 0.0f);
+                        ShieldDamage.Play(0.5f, 0.0f, 0.0f);
                         if (Player.Shield > 4)
                             Player.Shield -= 5;
                         else
@@ -1138,8 +1234,8 @@ namespace Space_Scavenger
                 Player.Position = new Vector2(0, 0);
                 Player.Health = Player.MaxHealth;
                 Player.Shield = Player.MaxShield;
-                //deathSound.Play();
-                MediaPlayer.Stop();
+                deathSound.Play(0.2f,0,0);
+               
                 gameState = GameState.GameOver;
             }
 
@@ -1148,10 +1244,10 @@ namespace Space_Scavenger
             {
                 Player.Shield++;
                 _shieldTime = 40;
-                //if (Player.Shield == 10)
-                //    ShieldUp.Play(0.5f, 0.0f, 0.0f);
-                //else
-                //    ShieldRegenerating.Play(0.5f, 0.0f, 0.0f);
+                if (Player.Shield == Player.MaxHealth)
+                    ShieldUp.Play(0.05f, 0.0f, 0.0f);
+                else
+                    ShieldRegenerating.Play(0.05f, 0.0f, 0.0f);
             }
             if (_shieldTime >= 0)
                 _shieldTime--;
@@ -1200,13 +1296,16 @@ namespace Space_Scavenger
                 Player.StrafeRight();
 
             if (gamePadState.IsButtonDown(Buttons.Start) && previousGamePadState.IsButtonUp(Buttons.Start))
+            {
                 gameState = GameState.Paused;
+            }
+                
 
             if (gamePadState.IsButtonDown(Buttons.RightTrigger))
             {
                 if (Player.ReloadTime <= 0 && MultiShot)
                 {
-                    //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                    laserEffect.Play(0.1f, 0.0f, 0.0f);
                     var s = Player.multiShot();
                     if (s != null)
                         playerShots.Add(s);
@@ -1217,7 +1316,7 @@ namespace Space_Scavenger
                 }
                 else if (Player.ReloadTime <= 0)
                 {
-                    //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                    laserEffect.Play(0.1f, 0.0f, 0.0f);
                     var s = Player.Shoot();
                     if (s != null)
                         playerShots.Add(s);
@@ -1265,13 +1364,16 @@ namespace Space_Scavenger
                 Player.StrafeRight();
 
             if (keyboardState.IsKeyDown(Keys.P) && previousKeyboardState.IsKeyUp(Keys.P))
+            {
                 gameState = GameState.Paused;
-            
+            }
+
+
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 if (Player.ReloadTime <= 0 && MultiShot)
                 {
-                    //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                    laserEffect.Play(0.1f, 0.0f, 0.0f);
                     var s = Player.multiShot();
                     if (s != null)
                         playerShots.Add(s);
@@ -1282,7 +1384,7 @@ namespace Space_Scavenger
                 }
                 else if (Player.ReloadTime <= 0)
                 {
-                    //laserEffect.Play(0.2f, 0.0f, 0.0f);
+                    laserEffect.Play(0.1f, 0.0f, 0.0f);
                     var s = Player.Shoot();
                     if (s != null)
                         playerShots.Add(s);
