@@ -822,3 +822,9 @@
 /processorParam:Quality=Best
 /build:DeathSoundNew.wav
 
+#begin BigLaser.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:BigLaser.wav
+

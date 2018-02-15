@@ -25,19 +25,31 @@ namespace Space_Scavenger
             if (_reloadTimer2 <= 0)
             {
                 var s = BossShoot(direction);
+                if (MyGame.soundEffectTimer <= 0)
+                {
+                    MyGame.EnemyShootEffect.Play(0.05f, 0.0f, 0.0f);
+                    MyGame.soundEffectTimer = 15;
+                }
                 if (s != null)
+                {
                     MyGame.enemyShots.Add(s);
+                }
                 _reloadTimer2 = 10;
             }
 
             if (ReloadTimer <= 0)
             {
                 var sa1 = BossShootAoE(direction);
+               
                 if (sa1 != null)
                 {
                     sa1.Radius = 30;
                     sa1.chosenTexture2D = MyGame.bossShotTexture;
                     MyGame.bossShots.Add(sa1);
+                    if (Health > 30)
+                    {
+                        MyGame.TreasureShipShootEffect.Play(0.1f, 0.0f, 0.0f); 
+                    }
                 }
                 var sa2 = BossShootAoE(direction);
                 if (sa2 != null)
@@ -45,7 +57,14 @@ namespace Space_Scavenger
                     sa2.Radius = 30;
                     sa2.chosenTexture2D = MyGame.bossShotTexture;
                     MyGame.bossShots.Add(sa2);
+
                 }
+                //if (MyGame.soundEffectTimer <= 0)
+                //{
+                //    MyGame.TreasureShipShootEffect.Play(0.1f, 0.0f, 0.0f);
+                //    MyGame.soundEffectTimer = 10;
+                //}
+
                 if (Health > 60)
                     ReloadTimer = 60;
                 else if (Health > 30)

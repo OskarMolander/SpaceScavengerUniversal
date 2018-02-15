@@ -112,6 +112,7 @@ namespace Space_Scavenger
         public  SoundEffect MeteorExplosion;
         public  SoundEffect ShieldDamage;
         public  SoundEffect deathSound;
+        public SoundEffect TreasureShipShootEffect;
         public  SoundEffect        BackgroundSong;
         private SoundEffectInstance backgroundSong;
         #endregion
@@ -228,6 +229,7 @@ namespace Space_Scavenger
             MeteorExplosion    = Content.Load<SoundEffect>("ExplosionMeteor");
             ShieldDamage       = Content.Load<SoundEffect>("ShieldDamage");
             BackgroundSong     = Content.Load<SoundEffect>("backgroundMusicNeon");
+            TreasureShipShootEffect = Content.Load<SoundEffect>("BigLaser");
 
             //MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(BackgroundSong);
@@ -952,9 +954,9 @@ namespace Space_Scavenger
                 exp.CurrentEnemiesKilled = 0;
             }
 
-            if (treasureShips.Count < 100/*1*/)
+            if (treasureShips.Count < 1/*1*/)
             {
-                if (_rng.Next(0, 4) == 1)//if (_rng.Next(0, 240) == 120)
+                /*if (_rng.Next(0, 4) == 1)*/if (_rng.Next(0, 240) == 120)
                 {
                     var te = _treasureShip.SpawnTreasureShip(this);
                     if (te != null)
@@ -1145,6 +1147,7 @@ namespace Space_Scavenger
             }
             foreach (var shot in enemyShots)
             {
+                
                 var hitasteroid = _asteroid.Asteroids.FirstOrDefault(e => e.CollidesWith(shot));
 
                 if (hitasteroid != null)
@@ -1159,7 +1162,10 @@ namespace Space_Scavenger
                 
                 shot.Timer--;
                 if (shot.Timer <= 0)
+                {
+                   
                     shot.IsDead = true;
+                }
             }
             
             foreach (var te in treasureShips)

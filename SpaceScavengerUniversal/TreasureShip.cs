@@ -19,11 +19,18 @@ namespace Space_Scavenger
             if (ReloadTimer <= 0)
             {
                 var sa1 = TreasueShootAoE(direction);
+                
                 if (sa1 != null)
                 {
                     sa1.Radius = 30;
                     sa1.chosenTexture2D = MyGame.bossShotTexture2;
                     MyGame.bossShots.Add(sa1);
+
+                    //if (MyGame.soundEffectTimer <= 0)
+                    //{
+                    //    MyGame.TreasureShipShootEffect.Play(0.2f, 0.0f, 0.0f);
+                    //    MyGame.soundEffectTimer = 60;
+                    //}
                 }
                 ReloadTimer = 5;
             }

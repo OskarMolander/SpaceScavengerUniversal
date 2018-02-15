@@ -145,7 +145,7 @@ namespace Space_Scavenger
                             MyGame.enemyShots.Add(s);
                             if (MyGame.soundEffectTimer <= 0)
                             {
-                                //MyGame.EnemyShootEffect.Play(0.8f, 0.0f, 0.0f);
+                                MyGame.EnemyShootEffect.Play(0.2f, 0.0f, 0.0f);
                                 MyGame.soundEffectTimer = 15;
                             }
                             reloadTime += 60;
