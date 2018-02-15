@@ -311,7 +311,7 @@ namespace Space_Scavenger
                         Exit();
 
                     if (Keyboard.GetState().IsKeyDown(Keys.E) && _shoptimer <= 0 
-                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0)
+                        || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0 || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.B) && _shoptimer <= 0)
                     {
                         gameState = GameState.Playing;
                         _shoptimer = 10;
@@ -348,8 +348,9 @@ namespace Space_Scavenger
                 Player.Shield = 5;
                 Player.MaxHealth = Player.Health;
                 Player.MaxShield = Player.Shield;
+                Player.NewReloadTime = 60;
                 MultiShot = false;
-                FasterLaser = false;
+                
 
                 money.Moneyroids.Clear();
 
@@ -363,7 +364,7 @@ namespace Space_Scavenger
 
                 gameState = GameState.Menu;
             }
-
+            shop.ResetShopValues();
             _asteroid.Asteroids.Clear();
             _asteroid.MiniAsteroids.Clear();
             _enemies.Clear();
@@ -389,8 +390,9 @@ namespace Space_Scavenger
                 Player.Shield = 5;
                 Player.MaxHealth = Player.Health;
                 Player.MaxShield = Player.Shield;
+                Player.NewReloadTime = 60;
                 MultiShot = false;
-                FasterLaser = false;
+                
 
                 money.Moneyroids.Clear();
 
@@ -407,7 +409,7 @@ namespace Space_Scavenger
             _asteroid.MiniAsteroids.Clear();
             _enemies.Clear();
             bosses.Clear();
-
+            shop.ResetShopValues();
             _wantedEnemies = 5;
             treasureShips.Clear();
             bossShots.Clear();
@@ -702,6 +704,10 @@ namespace Space_Scavenger
                     GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Y) && _shoptimer <= 0)
                 {
                     gameState = GameState.Shopping;
+                    if (ControllerValidator.IsGamePadConnected())
+                    {
+                        Shop.SetMousePosTileOne();
+                    }
                     _shoptimer = 10;
                 }
                 else
@@ -1138,7 +1144,7 @@ namespace Space_Scavenger
             }
 
 
-            if (Player.Shield < 5 && _shieldTime <= 0)
+            if (Player.Shield < Player.MaxShield && _shieldTime <= 0)
             {
                 Player.Shield++;
                 _shieldTime = 40;

@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceScavengerUniversal;
 using System.Diagnostics;
-
 using static SpaceScavengerUniversal.ShopTile;
 
 namespace Space_Scavenger
@@ -19,9 +18,10 @@ namespace Space_Scavenger
         private readonly SpaceScavenger _myGame;
         private SpriteBatch _spriteBatch;
         private readonly List<ShopTile> _shopTiles;
-        private (string text, int price)[] _shopTileTexts;
+        private (string text, string price)[] _shopTileTexts;
 
         private MouseState _previousMState;
+        private GamePadState _previousGpState;
         private string _itemDescription;
 
 
@@ -35,26 +35,26 @@ namespace Space_Scavenger
 
         private bool _shieldRank1;
         private bool _shieldRank2;
-        private bool _shieldRank3;
+
 
         private bool _boostRank1;
         private bool _boostRank2;
-        private bool _boostRank3;
+
 
         private bool _movementSpeedRank1;
         private bool _movementSpeedRank2;
-        private bool _movementSpeedRank3;
 
 
         private bool _reloadTimeRank1;
         private bool _reloadTimeRank2;
-        private bool _reloadTimeRank3;
-
-        private bool _auraTimerRank1;
-        private bool _auraTimerRank2;
-        private bool _auraTimerRank3;
 
 
+        private static bool isAtTileOne;
+        private bool isAtTileTwo;
+        private bool isAtTileThree;
+        private bool isAtTileFour;
+        private bool isAtTileFive;
+        private bool isAtTileSix;
 
         //Fonts
         private SpriteFont _itemDescFont;
@@ -81,12 +81,12 @@ namespace Space_Scavenger
 
             _shopTileTexts = new[]
             {
-                ("Health+",       500),
-                ("Shield+",       500),
-                ("Boost+",        500),
-                ("Speed+",        500),
-                ("Faster reload+",500),
-                ("Multishot",     1000)
+                ("Health+",       "500"),
+                ("Shield+",       "500"),
+                ("Boost+",        "500"),
+                ("Speed+",        "500"),
+                ("Faster reload+","500"),
+                ("Multishot",     "1000")
 
             };
 
@@ -95,11 +95,11 @@ namespace Space_Scavenger
             _boostRank1 = true;
             _reloadTimeRank1 = true;
             _movementSpeedRank1 = true;
-            _auraTimerRank1 = true;
+           
 
             _itemDescription = "";
 
-
+            
         }
 
         protected override void LoadContent()
@@ -121,8 +121,6 @@ namespace Space_Scavenger
 
             //Rectangles
             _mainWindow = new Rectangle(1220, 220, (int)(_mainWindowTexture.Width * 0.75), (int)(_mainWindowTexture.Height * 0.75));
-
-
             base.LoadContent();
         }
 
@@ -136,6 +134,7 @@ namespace Space_Scavenger
                 IsBlasterButtonPressed();
                 IsMovementButtonPressed();
                 IsMultishotButtonPressed();
+                NavigateWithController();
                 _previousMState = Mouse.GetState();
             }
             base.Update(gameTime);
@@ -152,7 +151,7 @@ namespace Space_Scavenger
             _spriteBatch.End();
             foreach (var shoptile in _shopTiles)
             {
-                shoptile.Draw(gameTime, _shopTileTexts[_shopTiles.IndexOf(shoptile)].text, _shopTileTexts[_shopTiles.IndexOf(shoptile)].price + "$");
+                shoptile.Draw(gameTime, _shopTileTexts[_shopTiles.IndexOf(shoptile)].text, _shopTileTexts[_shopTiles.IndexOf(shoptile)].price);
             }
         }
 
@@ -160,7 +159,7 @@ namespace Space_Scavenger
         private void IsHealthButtonPressed()
         {
             _itemDescription = "";
-            if (Hover(_shopTiles[0].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1),_shopTiles[0].Rectangle))
             {
                 if (_healthRank1)
                 {
@@ -174,9 +173,10 @@ namespace Space_Scavenger
                 {
                     _itemDescription = "HP fully upgraded!";
                 }
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _previousMState.LeftButton != ButtonState.Pressed)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _previousMState.LeftButton != ButtonState.Pressed 
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[0].price)
+                    if (_shopTileTexts[0].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[0].price))
                     {
                         IncreaseHealth();
                     }
@@ -189,18 +189,18 @@ namespace Space_Scavenger
             if (_healthRank1)
             {
                 HealthToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[0].price;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[0].price);
 
                 _shopTileTexts[0].text = "Health++";
-                _shopTileTexts[0].price = 1000;
+                _shopTileTexts[0].price = "1000";
             }
 
             else if (_healthRank2)
             {
                 HealthToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[0].price;
-                _shopTileTexts[0].text = "Health (Max)";
-                _shopTileTexts[0].price = 0;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[0].price);
+                _shopTileTexts[0].text = "Health";
+                _shopTileTexts[0].price = "Max";
             }
 
 
@@ -245,7 +245,7 @@ namespace Space_Scavenger
         private void IsShieldButtonPressed()
         {
             //_itemDescription = "";
-            if (Hover(_shopTiles[1].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1), _shopTiles[1].Rectangle))
             {
                 if (_shieldRank1)
                 {
@@ -260,9 +260,10 @@ namespace Space_Scavenger
                     _itemDescription = "Shield fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                    _previousMState.LeftButton != ButtonState.Pressed
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[1].price)
+                    if (_shopTileTexts[1].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[1].price))
                     {
                         IncreaseShield();
                     }
@@ -275,17 +276,17 @@ namespace Space_Scavenger
             if (_shieldRank1)
             {
                 ShieldToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[1].price;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[1].price);
                 _shopTileTexts[1].text = "Shield++";
-                _shopTileTexts[1].price = 1000;
+                _shopTileTexts[1].price = "1000";
             }
 
             else if (_shieldRank2)
             {
                 ShieldToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[1].price;
-                _shopTileTexts[1].text = "Shield (Max)";
-                _shopTileTexts[1].price = 0;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[1].price);
+                _shopTileTexts[1].text = "Shield";
+                _shopTileTexts[1].price = "Max";
             }
         }
 
@@ -320,8 +321,7 @@ namespace Space_Scavenger
             {
                 _myGame.Player.MaxShield = newMaxShield;
             }
-            _shieldRank2 = false;
-            _shieldRank3 = true;
+
         }
 
 
@@ -329,7 +329,7 @@ namespace Space_Scavenger
         private void IsBoostButtonPressed()
         {
             //_itemDescription = "";
-            if (Hover(_shopTiles[2].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1), _shopTiles[2].Rectangle))
             {
                 if (_boostRank1)
                 {
@@ -344,9 +344,10 @@ namespace Space_Scavenger
                     _itemDescription = "Boost fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                    _previousMState.LeftButton != ButtonState.Pressed 
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[2].price)
+                    if (_shopTileTexts[2].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[2].price))
                     {
                         IncreaseNrOfBoosts();
                     }
@@ -359,17 +360,17 @@ namespace Space_Scavenger
             if (_boostRank1)
             {
                 BoostToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[2].price;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[2].price);
                 _shopTileTexts[2].text = "Boost++";
-                _shopTileTexts[2].price = 1000;
+                _shopTileTexts[2].price = "1000";
             }
 
             else if (_boostRank2)
             {
                 BoostToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[2].price;
-                _shopTileTexts[2].text = "Boost (Max)";
-                _shopTileTexts[2].price = 0;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[2].price);
+                _shopTileTexts[2].text = "Boost";
+                _shopTileTexts[2].price = "Max";
             }
         }
 
@@ -386,14 +387,14 @@ namespace Space_Scavenger
             _myGame.boost.MaxNrOfBoosts = 3;
             _myGame.boost.NrOfBoosts = _myGame.boost.MaxNrOfBoosts;
             _boostRank2 = false;
-            _boostRank3 = true;
+
         }
 
         //MovementSpeed++
 
         private void IsMovementButtonPressed()
         {
-            if (Hover(_shopTiles[3].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1),_shopTiles[3].Rectangle))
             {
                 if (_movementSpeedRank1)
                 {
@@ -408,9 +409,10 @@ namespace Space_Scavenger
                     _itemDescription = "Speed fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                    _previousMState.LeftButton != ButtonState.Pressed
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[3].price)
+                    if (_shopTileTexts[3].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[3].price))
                     {
                         IncreaseMovementSpeed();
                     }
@@ -424,17 +426,17 @@ namespace Space_Scavenger
             if (_movementSpeedRank1)
             {
                 MovementSpeedToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[3].price;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[3].price);
                 _shopTileTexts[3].text = "Speed++";
-                _shopTileTexts[3].price = 1000;
+                _shopTileTexts[3].price = "1000";
             }
 
             else if (_movementSpeedRank2)
             {
                 MovementSpeedToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[3].price;
-                _shopTileTexts[3].text = "Speed (Max)";
-                _shopTileTexts[3].price = 0;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[3].price);
+                _shopTileTexts[3].text = "Speed";
+                _shopTileTexts[3].price = "Max";
             }
         }
 
@@ -449,7 +451,7 @@ namespace Space_Scavenger
         {
             _myGame.Player.SpeedMultiplier = 0.35f;
             _movementSpeedRank2 = false;
-            _movementSpeedRank3 = true;
+
         }
 
 
@@ -457,7 +459,7 @@ namespace Space_Scavenger
         private void IsBlasterButtonPressed()
         {
             //_itemDescription = "";
-            if (Hover(_shopTiles[4].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1),_shopTiles[4].Rectangle))
             {
                 if (_reloadTimeRank1)
                 {
@@ -472,12 +474,18 @@ namespace Space_Scavenger
                     _itemDescription = "Faster reload fully upgraded!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                    _previousMState.LeftButton != ButtonState.Pressed
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
 
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[4].price)
+                    if (_shopTileTexts[4].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[4].price))
                     {
                         DecreaseBlasterReloadTime();
+                    }
+
+                    if (!int.TryParse(_shopTileTexts[4].price, out int price))
+                    {
+                        
                     }
                 }
             }
@@ -488,17 +496,17 @@ namespace Space_Scavenger
             if (_reloadTimeRank1)
             {
                 ReloadToRank2();
-                _myGame.exp.CurrentExp -= _shopTileTexts[4].price;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[4].price);
                 _shopTileTexts[4].text = "Faster reload++";
-                _shopTileTexts[4].price = 1000;
+                _shopTileTexts[4].price = "1000";
             }
 
             else if (_reloadTimeRank2)
             {
                 ReloadToRank3();
-                _myGame.exp.CurrentExp -= _shopTileTexts[4].price;
-                _shopTileTexts[4].text = "Faster reload (Max)";
-                _shopTileTexts[4].price = 0;
+                _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[4].price);
+                _shopTileTexts[4].text = "Faster reload";
+                _shopTileTexts[4].price = "Max";
             }
         }
 
@@ -513,14 +521,13 @@ namespace Space_Scavenger
         {
             _myGame.Player.NewReloadTime = 20;
             _reloadTimeRank2 = false;
-            _reloadTimeRank3 = true;
         }
 
         //Multishot
         private void IsMultishotButtonPressed()
         {
             //_itemDescription = "";
-            if (Hover(_shopTiles[5].Rectangle))
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1),_shopTiles[5].Rectangle))
             {
                 if (!_myGame.MultiShot)
                 {
@@ -531,9 +538,10 @@ namespace Space_Scavenger
                     _itemDescription = "Multishot unlocked!";
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    _previousMState.LeftButton != ButtonState.Pressed)
+                    _previousMState.LeftButton != ButtonState.Pressed
+                    || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && _previousGpState.Buttons.A != ButtonState.Pressed)
                 {
-                    if (_myGame.exp.CurrentExp >= _shopTileTexts[5].price)
+                    if (_shopTileTexts[5].price != "Max" && _myGame.exp.CurrentExp >= int.Parse(_shopTileTexts[5].price))
                     {
                         EnableMultiShot();
 
@@ -546,50 +554,189 @@ namespace Space_Scavenger
         private void EnableMultiShot()
         {
             _myGame.MultiShot = true;
-            _myGame.exp.CurrentExp -= _shopTileTexts[5].price;
+            _myGame.exp.CurrentExp -= int.Parse(_shopTileTexts[5].price);
             _shopTileTexts[5].text = "Multishot Activated!";
-            _shopTileTexts[5].price = 0;
+            _shopTileTexts[5].price = "Max";
         }
 
-        //Invincibility Aura
-        //private void IsAuraButtonPressed()
-        //{
-        //    if (Hover(_shopTiles[6].Rectangle))
-        //    {
-        //        if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-        //            _previousMState.LeftButton != ButtonState.Pressed)
-        //        {
-        //            DecreaseAuraTimer();
-        //        }
-        //    }
-        //}
 
-        //private void DecreaseAuraTimer()
-        //{
-        //    if (_auraTimerRank1)
-        //    {
-        //        AuraTimerToRank2();
-        //    }
 
-        //    else if (_auraTimerRank2)
-        //    {
-        //        AuraTimerToRank3();
-        //    }
-        //}
+        //Controller inputs
+        private void NavigateWithController()
+        {
+            if (ControllerValidator.IsGamePadConnected())
+            {
+                ControllerPressDown();
+                ControllerPressUp();
+                _previousGpState = GamePad.GetState(PlayerIndex.One);
+            }
+        }
 
-        //private void AuraTimerToRank2()
-        //{
-        //    _myGame.NewPlayerInvincibilityTimer = 20;
-        //    _auraTimerRank1= false;
-        //    _auraTimerRank2 = true;
-        //}
+        private void ControllerPressUp()
+        {
+            if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed &&
+                _previousGpState.DPad.Up == ButtonState.Released)
+            {
+                if (isAtTileOne)
+                {
+                    
+                }
+                else if (isAtTileTwo)
+                {
+                    SetMousePosTileOne();
+                }
+                else if (isAtTileThree)
+                {
+                    SetMousePosTileTwo();
+                }
+                else if (isAtTileFour)
+                {
+                    SetMousePosTileThree();
+                }
+                else if (isAtTileFive)
+                {
+                    SetMousePosTileFour();
+                }
+                else if (isAtTileSix)
+                {
+                    SetMousePosTileFive();
+                }
+            }
+        }
 
-        //private void AuraTimerToRank3()
-        //{
-        //    _myGame.NewPlayerInvincibilityTimer = 10;
-        //    _auraTimerRank2 = false;
-        //    _auraTimerRank3 = true;
-        //}
+        private void ControllerPressDown()
+        {
+            if (GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed &&
+                _previousGpState.DPad.Down == ButtonState.Released)
+            {
+                if (isAtTileOne)
+                {
+                    SetMousePosTileTwo();
+                }
+                else if (isAtTileTwo)
+                {
+                    SetMousePosTileThree();
+                }
+                else if (isAtTileThree)
+                {
+                    SetMousePosTileFour();
+                }
+                else if (isAtTileFour)
+                {
+                    SetMousePosTileFive();
+                }
+                else if (isAtTileFive)
+                {
+                    SetMousePosTileSix();
+                }
+            }
+        }
 
+        public static void SetMousePosTileOne()
+        {
+            if (ControllerValidator.IsGamePadConnected())
+            {
+                Mouse.SetPosition(1250, 300);
+                isAtTileOne = true;
+
+            }
+        }
+
+        private void SetMousePosTileTwo()
+        {
+            Mouse.SetPosition(1250,380);
+            isAtTileTwo = true;
+
+            isAtTileOne = false;
+            isAtTileThree = false;
+            isAtTileFour = false;
+            isAtTileFive = false;
+            isAtTileSix = false;
+        }
+
+        private void SetMousePosTileThree()
+        {
+            Mouse.SetPosition(1250, 460);
+
+            isAtTileThree = true;
+
+            isAtTileOne = false;
+            isAtTileTwo = false;
+            isAtTileFour = false;
+            isAtTileFive = false;
+            isAtTileSix = false;
+        }
+
+        private void SetMousePosTileFour()
+        {
+            Mouse.SetPosition(1250, 540);
+
+            isAtTileFour = true;
+
+            isAtTileOne = false;
+            isAtTileThree = false;
+            isAtTileTwo = false;
+            isAtTileFive = false;
+            isAtTileSix = false;
+        }
+
+        private void SetMousePosTileFive()
+        {
+            Mouse.SetPosition(1250, 620);
+            isAtTileFive = true;
+
+            isAtTileFour = false;
+            isAtTileOne = false;
+            isAtTileThree = false; 
+            isAtTileTwo = false;
+            isAtTileSix = false;
+        }
+
+        private void SetMousePosTileSix()
+        {
+            Mouse.SetPosition(1250, 700);
+            isAtTileSix = true;
+
+            isAtTileFive = false;
+            isAtTileOne = false;
+            isAtTileThree = false;
+            isAtTileFour = false;
+            isAtTileTwo = false;
+        }
+
+
+        public void ResetShopValues()
+        {
+            _healthRank1=true;
+            _healthRank2=false;
+
+            _shieldRank1=true;
+            _shieldRank2 = false;
+
+            _boostRank1 = true;
+            _boostRank2= false;
+
+            _movementSpeedRank1 = true;
+            _movementSpeedRank2 = false;
+
+            _reloadTimeRank1 = true;
+            _reloadTimeRank2 = false;
+
+
+
+            _shopTileTexts[0].price = "500";
+            _shopTileTexts[1].price = "500";
+            _shopTileTexts[2].price = "500";
+            _shopTileTexts[3].price = "500";
+            _shopTileTexts[4].price = "500";
+            _shopTileTexts[5].price = "1000";
+
+            _shopTileTexts[0].text = "Health+";
+            _shopTileTexts[1].text = "Shield+";
+            _shopTileTexts[2].text = "Boost+";
+            _shopTileTexts[3].text = "Speed+";
+            _shopTileTexts[4].text = "Faster reload+";
+            _shopTileTexts[5].text = "Multishot";
+        }
     }
 }

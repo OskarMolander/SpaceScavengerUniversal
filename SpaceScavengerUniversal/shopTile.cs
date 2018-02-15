@@ -59,7 +59,15 @@ namespace SpaceScavengerUniversal
         public void Draw(GameTime gameTime, string text, string cost)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(Hover(_rectangle) ? _rectangleHoverTexture : _rectangleTexture, _rectangle, Color.White);
+            //_spriteBatch.Draw(Hover(_rectangle) ? _rectangleHoverTexture : _rectangleTexture, _rectangle, Color.White);
+            if (Hover(new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1), _rectangle))
+            {
+                _spriteBatch.Draw(_rectangleHoverTexture,_rectangle,Color.White);
+            }
+            else
+            {
+                _spriteBatch.Draw(_rectangleTexture, _rectangle, Color.White);
+            }
             _spriteBatch.DrawString(_font, text, new Vector2(_rectangle.Center.X - 150, _rectangle.Center.Y - 10), new Color(205, 0, 183));
             _spriteBatch.DrawString(_font, cost, new Vector2(_rectangle.Center.X + 115, _rectangle.Center.Y - 10), new Color(205, 0, 183));
             _spriteBatch.End();
@@ -67,9 +75,9 @@ namespace SpaceScavengerUniversal
 
         public Rectangle Rectangle => _rectangle;
 
-        public static bool Hover(Rectangle rectangle)
+        public static bool Hover(Rectangle rectangle, Rectangle other)
         {
-            return new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1).Intersects(rectangle);
+            return rectangle.Intersects(other);
         }
     }
 }
